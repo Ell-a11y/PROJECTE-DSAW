@@ -4,6 +4,7 @@ const CardObject = ({ resource: recurso }) => {
   if (!recurso) return null;
 
   const {
+    id,
     nom,
     imatge,
     descripcio,
@@ -14,6 +15,9 @@ const CardObject = ({ resource: recurso }) => {
     usuario,
   } = recurso;
 
+  const mesInfo = function() {
+    window.open(`./index.html?id=${id}`);
+  }
   return (
     <article className="card-component">
       <img
@@ -38,7 +42,7 @@ const CardObject = ({ resource: recurso }) => {
           <span className="meta-item">Qualitat: {qualitat}</span>
           <span className="meta-item">Usuari: {usuario}</span>
         </div>
-        
+        <button type="button" className="meta-button" id="paginaObject" onClick={mesInfo}>Pagina del producte</button>
       </div>
     </article>
   );

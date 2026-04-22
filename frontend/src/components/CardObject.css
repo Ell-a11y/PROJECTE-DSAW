@@ -41,4 +41,12 @@
   border-radius: 999px;
   padding: 4px 10px;
   font-size: 0.82rem;
+  color: #000000;
+}
+.meta-button{
+  background-color: blue;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.82rem;
+  color: #ffffff;
 }
