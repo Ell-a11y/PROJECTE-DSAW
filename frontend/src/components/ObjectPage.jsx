@@ -1,30 +1,37 @@
-const ObjectPage = ({ resource: recurso }) => {
-    if (!recurso) return null;
+function comentariosGen(array, idObj) {
+  const lista = [];
+
+  for (let i = 0; i < array.length; i++) {
+    if (array[i].id_objeto === idObj) {
+      lista.push(
+        <article key={array[i].id}>
+          <span>{array[i].comentari}</span><br/>
+          <span> Fecha: {array[i].fecha}  -  Usuari: {array[i].id_usuario}</span>
+        </article>
+      );
+    }
+  }
+
+  return lista;
+}
+
+const ObjectPage = ({ resource, comment}) => {
+    if (!resource) return (<p>Recurso no encontrado</p>);
     const params = new URLSearchParams(window.location.search);
-    const idObj = params.get("id");
+    const idObj = Number(params.get("id"));
+    const recurso = resource.find(r => r.id === idObj);
     if (recurso.id == idObj) {
-        const {
-        id,
-        nom,
-        imatge,
-        descripcio,
-        estat,
-        districte,
-        categoria,
-        qualitat,
-        usuario,
-        } = recurso;
         return (
             <article>
                 <h1 style={{
                     color : "black"
-                }}> {nom} </h1>
+                }}> {recurso.nom} </h1>
                 <article className="contenedor">
                     <article className="contenedor-img">
                         <img
                             className="card-image"
-                            src={imatge}
-                            alt={nom}
+                            src={recurso.imatge}
+                            alt={recurso.nom}
                             loading="lazy"
                             onError={(event) => {
                             event.currentTarget.src =
@@ -33,15 +40,17 @@ const ObjectPage = ({ resource: recurso }) => {
                         />
                     </article>
                     <article>
-                        <span className="meta-item">Estat: {estat}</span>
-                        <span className="meta-item">Districte: {districte}</span>
-                        <span className="meta-item">Categoria: {categoria}</span>
-                        <span className="meta-item">Qualitat: {qualitat}</span>
-                        <span className="meta-item">Usuari: {usuario}</span>
+                        <span className="meta-item">Estat: {recurso.estat}</span>
+                        <span className="meta-item">Districte: {recurso.districte}</span>
+                        <span className="meta-item">Categoria: {recurso.categoria}</span>
+                        <span className="meta-item">Qualitat: {recurso.qualitat}</span>
+                        <span className="meta-item">Usuari: {recurso.usuario}</span>
                     </article>
                 </article>
                 <button onClick={() => {alert("Solicitat.")}}> Solicitar objecte </button>
-                <section className="contenidor-comentaris"></section>
+                <section id="contenidor-comentaris">
+                      {comentariosGen(comment, idObj)}
+                </section>
             </article>
         )
     } else if(idObj == 0) {

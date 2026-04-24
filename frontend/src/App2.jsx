@@ -31,8 +31,30 @@ const comentaris = [
     id:1,
     id_usuario: 2,
     id_objeto: 2,
-    comentari: "Es una bicicleta molt bona."
-  }
+    comentari: "Es una bicicleta muy buena.",
+    fecha: "14/12/1990",
+  },
+  {
+    id:2,
+    id_usuario: 6,
+    id_objeto: 1,
+    comentari: "Es un taladro en pesimo estado crak.",
+    fecha: "01/05/-379",
+  },
+  {
+    id:3,
+    id_usuario: 90,
+    id_objeto: 2,
+    comentari: "¿Se puede quedar para siempre pero sin robar?",
+    fecha: "06/01/1792",
+  },
+  {
+    id:4,
+    id_usuario: 14,
+    id_objeto: 1,
+    comentari: "Ganador de mil batallas.",
+    fecha: "26/04/2026",
+  },
 ]
 
 function App() {
@@ -49,9 +71,7 @@ function App() {
         background: "#f2f4f7",
       }}
     >
-      {recursosPrueba.map((recurso) => (
-        <ObjectPage key={`${recurso.nom}-${recurso.usuario}`} resource={recurso} />
-      ))}
+    <ObjectPage key={`${recursosPrueba.nom}`} resource={recursosPrueba} comment={comentaris}/>
     </main>
   );
 }
