@@ -26,6 +26,14 @@ const recursosPrueba = [
     districte: "Gracia",
   },
 ];
+const comentaris = [
+  {
+    id:1,
+    id_usuario: 2,
+    id_objeto: 2,
+    comentari: "Es una bicicleta molt bona."
+  }
+]
 
 function App() {
   return (

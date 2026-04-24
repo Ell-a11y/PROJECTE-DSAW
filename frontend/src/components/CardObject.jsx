@@ -16,7 +16,7 @@ const CardObject = ({ resource: recurso }) => {
   } = recurso;
 
   const mesInfo = function() {
-    window.open(`./index.html?id=${id}`);
+    window.location.href = `./app2/?id=${id}`;
   }
   return (
     <article className="card-component">
