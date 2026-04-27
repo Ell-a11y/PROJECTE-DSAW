@@ -2,8 +2,7 @@ import datetime
 
 import jwt
 from django.conf import settings
-from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password
 from rest_framework import viewsets, status
 from rest_framework.decorators import action, api_view
 from rest_framework.exceptions import AuthenticationFailed
@@ -19,12 +18,11 @@ from .serializers import (
 def register_api(request):
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
-        user, perfil = serializer.save()
+        perfil = serializer.save()
         return Response(
             {
-                'id': user.id,
                 'perfil_id': perfil.id,
-                'email': user.email,
+                'email': perfil.email,
             },
             status=status.HTTP_201_CREATED,
         )
@@ -37,10 +35,7 @@ def login_api(request):
     if serializer.is_valid():
         email = serializer.validated_data['email']
         password = serializer.validated_data['password']
-        user_login = User.objects.filter(email=email).first()
-        user = None
-        if user_login:
-            user = authenticate(username=user_login.username, password=password)
+        user = _autenticar(email, password)
         if user:
             token = _generar_token(user)
             TokenJWT.objects.create(user=user, token=token)
@@ -135,7 +130,7 @@ class ComentarisViewSet(TokenProtectedModelViewSet):
 
 def _generar_token(user):
     payload = {
-        'username': user.username,
+        'user_id': user.id,
         'email': user.email,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1),
     }
@@ -162,8 +157,18 @@ def _obtener_user_desde_token(request):
     if not token_guardado:
         raise AuthenticationFailed('Token invalido')
 
-    if token_guardado.user.username != payload.get('username'):
+    if token_guardado.user.id != payload.get('user_id'):
         raise AuthenticationFailed('Token invalido')
+    return token_guardado.user, token_guardado.user
 
-    perfil = Usuaris.objects.filter(auth_user=token_guardado.user).first()
-    return token_guardado.user, perfil
+
+def _autenticar(email, password):
+    try:
+        user = Usuaris.objects.get(email=email)
+    except Usuaris.DoesNotExist:
+        return None
+
+    if check_password(password, user.contrasenya):
+        return user
+
+    return None
