@@ -31,7 +31,7 @@ const comentaris = [
     id:1,
     id_usuario: 2,
     id_objeto: 2,
-    comentari: "Es una bicicleta muy buena.",
+    comentari: "这是一辆非常好的自行车。",
     fecha: "14/12/1990",
   },
   {
