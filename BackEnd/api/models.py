@@ -11,7 +11,7 @@ class Usuaris(models.Model):
     cognom = models.CharField(max_length=75)
     telefon = models.IntegerField()
     email = models.EmailField(unique=True)
-    contrasenya = models.CharField(max_length=150)
+    contrasenya = models.CharField(max_length=255)
 
 class Objectes(models.Model):
     users = models.ForeignKey(Usuaris, on_delete=models.CASCADE)
@@ -51,9 +51,9 @@ class Comentaris(models.Model):
 
 
 class TokenJWT(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(Usuaris, on_delete=models.CASCADE)
     token = models.TextField()
     creat_el = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Token de {self.user.username}"
+        return f"Token de {self.user.email}"

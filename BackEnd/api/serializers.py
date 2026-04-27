@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 from .models import Categoria, Usuaris, Objectes, Transaccio, Comentaris
 
 
@@ -61,22 +61,16 @@ class RegisterSerializer(serializers.Serializer):
     telefon = serializers.IntegerField(required=True)
 
     def validate_email(self, value):
-        if User.objects.filter(email=value).exists() or Usuaris.objects.filter(email=value).exists():
+        if Usuaris.objects.filter(email=value).exists():
             raise serializers.ValidationError('Este email ya existe')
         return value
 
     def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data['email'],
-            email=validated_data['email'],
-            password=validated_data['password'],
-        )
         perfil = Usuaris.objects.create(
-            auth_user=user,
             nom=validated_data['nom'],
             cognom=validated_data['cognom'],
             telefon=validated_data['telefon'],
             email=validated_data['email'],
-            contrasenya='',
+            contrasenya=make_password(validated_data['password']),
         )
-        return user, perfil
+        return perfil
