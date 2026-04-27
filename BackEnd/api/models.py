@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 # Create your models here.
@@ -5,11 +6,12 @@ class Categoria(models.Model):
     categoria = models.CharField(max_length=50)
 
 class Usuaris(models.Model):
+    auth_user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     nom = models.CharField(max_length=50)
     cognom = models.CharField(max_length=75)
     telefon = models.IntegerField()
     email = models.EmailField(unique=True)
-    contrasenya = models.CharField(max_length=50)
+    contrasenya = models.CharField(max_length=150)
 
 class Objectes(models.Model):
     users = models.ForeignKey(Usuaris, on_delete=models.CASCADE)
@@ -46,3 +48,12 @@ class Comentaris(models.Model):
     objecte = models.ForeignKey(Objectes, on_delete=models.CASCADE)
     comentari = models.CharField(max_length=150)
     data = models.DateTimeField(auto_now_add=True)
+
+
+class TokenJWT(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    token = models.TextField()
+    creat_el = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Token de {self.user.username}"
