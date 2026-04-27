@@ -1,35 +1,35 @@
+import "./ObjectPage.css";
+
 function comentariosGen(array, idObj) {
   const lista = [];
 
   for (let i = 0; i < array.length; i++) {
     if (array[i].id_objeto === idObj) {
       lista.push(
-        <article key={array[i].id}>
+        <article key={array[i].id} className="comentari-item">
           <span>{array[i].comentari}</span><br/>
           <span> Fecha: {array[i].fecha}  -  Usuari: {array[i].id_usuario}</span>
         </article>
       );
     }
   }
-
   return lista;
 }
 
-const ObjectPage = ({ resource, comment}) => {
+const objectPage = ({ resource, comment}) => {
     if (!resource) return (<p>Recurso no encontrado</p>);
     const params = new URLSearchParams(window.location.search);
     const idObj = Number(params.get("id"));
+    if(idObj == 0) window.location = "/";
     const recurso = resource.find(r => r.id === idObj);
     if (recurso.id == idObj) {
         return (
-            <article>
-                <h1 style={{
-                    color : "black"
-                }}> {recurso.nom} </h1>
+            <article className="main">
+                <h1 className="titol-section"> {recurso.nom} </h1>
                 <article className="contenedor">
                     <article className="contenedor-img">
                         <img
-                            className="card-image"
+                            className="obj-image"
                             src={recurso.imatge}
                             alt={recurso.nom}
                             loading="lazy"
@@ -39,23 +39,24 @@ const ObjectPage = ({ resource, comment}) => {
                             }}
                         />
                     </article>
-                    <article>
-                        <span className="meta-item">Estat: {recurso.estat}</span>
-                        <span className="meta-item">Districte: {recurso.districte}</span>
-                        <span className="meta-item">Categoria: {recurso.categoria}</span>
-                        <span className="meta-item">Qualitat: {recurso.qualitat}</span>
-                        <span className="meta-item">Usuari: {recurso.usuario}</span>
+                    <article className="contenedor-item">
+                        <span className="obj-item">Estat: {recurso.estat}</span>
+                        <span className="obj-item">Districte: {recurso.districte}</span>
+                        <span className="obj-item">Categoria: {recurso.categoria}</span>
+                        <span className="obj-item">Qualitat: {recurso.qualitat}</span>
+                        <span className="obj-item">Usuari: {recurso.usuario}</span>
                     </article>
                 </article>
-                <button onClick={() => {alert("Solicitat.")}}> Solicitar objecte </button>
+                <button onClick={() => {alert("Solicitat.")}} className="solicitar"> Solicitar objecte </button>
                 <section id="contenidor-comentaris">
+                    <h1 className="titol-section title-comment"> Comentaris </h1>
                       {comentariosGen(comment, idObj)}
                 </section>
             </article>
         )
-    } else if(idObj == 0) {
+    } else {
         window.location.href = "./..";
     }
 }
 
-export default ObjectPage;
+export default objectPage;
