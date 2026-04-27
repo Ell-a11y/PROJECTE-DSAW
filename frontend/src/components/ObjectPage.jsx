@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { SERVER_URL, login, register, objectsList, createOneObject } from '../communicationsManager';
 function comentariosGen(array, idObj) {
   const lista = [];
 
@@ -16,6 +18,31 @@ function comentariosGen(array, idObj) {
 }
 
 const ObjectPage = ({ resource, comment}) => {
+    const [user, setUser] = useState(null);
+    const [objects, setObjects] = useState([]);
+    useEffect(() => {
+        const fetchUser = async () => {
+            const user = await login({ email: 'hola3@test.com', password: '1234' });
+            localStorage.setItem('token', user.token);
+            setUser(user);
+        };
+        const createUser = async () => {
+            const user = await register({ email: 'hola3@test.com', password: '1234', nom: 'Hola', cognom: '1', telefon: 1234567890 });
+            setUser(user);
+        };
+        const createObject = async () => {
+            const object = await createOneObject({ nom: 'Taladro Bosch', imatge: 'https://blocks.astratic.com/img/general-img-landscape.png', categoria: 2, usuario: 1, descipcio: 'Taladro en buen estado para tareas de bricolaje.', qualitat: 'normal', estat: 'per_prestat', districte: 'Barcelona', users: 9});
+        };
+        const getObjects = async () => {
+            const objects = await objectsList();
+            console.log(objects);
+            
+            setObjects(objects);
+        };
+
+            fetchUser();
+            getObjects();
+    }, []);
     if (!resource) return (<p>Recurso no encontrado</p>);
     const params = new URLSearchParams(window.location.search);
     const idObj = Number(params.get("id"));
