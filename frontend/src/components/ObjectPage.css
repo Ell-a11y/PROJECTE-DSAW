@@ -1,0 +1,57 @@
+.titol-section {
+    color: black;
+    font-size: 200%;
+}
+.title-comment {
+    padding: 1%;
+    border: rgb(49, 49, 49) outset 5px;
+    display: inline-block;
+}
+.obj-item {
+  background: #f4f6f8;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.82rem;
+  color: #ffffff;
+  background-color: rgba(0, 0, 255, 0);
+  text-align:center;
+  align-items: center;
+}
+.contenedor {
+    display: flex;
+}
+.contenedor-item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    background-color: blue;
+    padding-right: 10px;
+    border-top-right-radius: 4%;
+    border-bottom-right-radius: 4%;
+}
+.obj-image {
+    object-fit: contain;
+    height: 100%;
+    border-top-left-radius: 4%;
+    border-bottom-left-radius: 4%;
+    /* Idea de reducir el tamaño en horizontal de la imagen, sin necesidad que el vertical se reduzca */
+}
+.comentari-item {
+    border: black solid 1px;
+    margin: 1%;
+    color: black;
+    width: auto;
+    padding: 2%;
+}
+.solicitar {
+    align-items: end;
+    margin-top: 2%;
+    font-size: 80%;
+    padding: 1%;
+}
+#contenidor-comentaris article {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
