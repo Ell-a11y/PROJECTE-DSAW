@@ -1,6 +1,7 @@
 import "./ObjectPage.css";
+import Registro from "./RegistroObj"
 
-function comentariosGen(array, idObj) {
+export function comentariosGen(array, idObj) {
   const lista = [];
 
   for (let i = 0; i < array.length; i++) {
@@ -49,7 +50,10 @@ const objectPage = ({ resource, comment}) => {
                 </article>
                 <button onClick={() => {alert("Solicitat.")}} className="solicitar"> Solicitar objecte </button>
                 <section id="contenidor-comentaris">
-                    <h1 className="titol-section title-comment"> Comentaris </h1>
+                    <article>
+                        <h1 className="titol-section title-comment"> Comentaris </h1>
+                        <Registro></Registro>
+                    </article>
                       {comentariosGen(comment, idObj)}
                 </section>
             </article>

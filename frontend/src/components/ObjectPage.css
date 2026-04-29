@@ -50,3 +50,8 @@
     font-size: 80%;
     padding: 1%;
 }
+#contenidor-comentaris article {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
