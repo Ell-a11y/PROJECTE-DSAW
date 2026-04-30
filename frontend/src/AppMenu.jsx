@@ -4,11 +4,11 @@ import Login from "./components/Login-Register";
 import "./AppMenu.css";
 function App() {
   return (
-    <nav>
-      <MenuNav/>
-      <Outlet/>
-      <Login></Login>
-    </nav>
+      <nav>
+        <MenuNav/>
+        <Outlet/>
+        <Login></Login>
+      </nav>
   );
 }
 
