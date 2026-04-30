@@ -1,6 +1,9 @@
+// Importacions necesaries
 import { useState } from "react";
 import "./RegistroObj.css";
 import { comentariosGen } from "./ObjectPage";
+import "./../communicationsManager"
+
 const params = new URLSearchParams(window.location.search);
 const idObj = Number(params.get("id"));
 export default function App() {
@@ -30,7 +33,15 @@ export default function App() {
         <form className="modal-content">
             <label id="form_coment_label"> Comentari: </label>
             <textarea value={nuevoComentario} onChange={(e) => setNuevoComentario(e.target.value)} placeholder="Escriu el teu comentari..." className="comentari-textarea"/>
-            <button type="button" onClick={() => (setOpen(false), alert('Comentari: ' + nuevoComentario))}> Enviar comentari </button>
+            <button type="button" onClick={() => (setOpen(false), function() {
+                alert('Comentari: ' + nuevoComentario);
+                const Objeto = {
+                    "comentari": nuevoComentario,
+                    "user": 7,
+                    "objecte": idObj
+                };
+                commentsByObject(Objeto);
+                })}> Enviar comentari </button>
         </form>
     </div>
 </div>

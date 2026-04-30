@@ -37,9 +37,7 @@ export async function objectsList() {
         mode: 'cors',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
-        credentials: 'include',
     });
     const data = await response.json();
     return data;

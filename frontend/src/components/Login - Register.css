@@ -1,0 +1,58 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.afellir-comment {
+    color: black;
+    font-size: 120%;
+    width: 25%;
+    height: 50%;
+    padding: 1%;
+    background-color: rgb(166, 197, 255);
+    border: rgb(49, 49, 49) outset 5px;
+    display: inline-block;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-evenly;
+    height: 10%;
+    background-color: rgb(57, 57, 57);
+}
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: white;
+  width: 40%;
+}
+.modal-content{
+    padding: 25%;
+}
+
+.comentari-textarea {
+  width: 100%;
+  min-height: 80px;
+  max-height: 200px;
+  padding: 12px;
+  font-size: 16px;
+  resize: vertical;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  color: #333;
+  background-color: #ccc;
+}
+
+
+input:focus {
+  border-color: #333;
+  background: white;
+}
