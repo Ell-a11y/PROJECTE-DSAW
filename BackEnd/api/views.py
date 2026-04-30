@@ -8,6 +8,7 @@ from rest_framework.decorators import action, api_view
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from .models import Categoria, Usuaris, Objectes, Transaccio, Comentaris, TokenJWT
+from .permissions import RolPermission
 from .serializers import (
     CategoriaSerializer, UsuarisSerializer, ObjectesSerializer,
     TransaccioSerializer, ComentarisSerializer, LoginSerializer, RegisterSerializer
@@ -50,20 +51,22 @@ class TokenProtectedModelViewSet(viewsets.ModelViewSet):
         self.auth_user, self.auth_perfil = _obtener_user_desde_token(request)
 
 
-class CategoriaViewSet(TokenProtectedModelViewSet):
+class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
+    permission_classes = [RolPermission]
 
 
-class UsuarisViewSet(TokenProtectedModelViewSet):
+class UsuarisViewSet(viewsets.ModelViewSet):
     queryset = Usuaris.objects.all()
     serializer_class = UsuarisSerializer
     http_method_names = ['get', 'put', 'patch', 'delete', 'head', 'options']
+    permission_classes = [RolPermission]
 
-
-class ObjectesViewSet(TokenProtectedModelViewSet):
+class ObjectesViewSet(viewsets.ModelViewSet):
     queryset = Objectes.objects.all()
     serializer_class = ObjectesSerializer
+    permission_classes = [RolPermission]
 
     def get_queryset(self):
         queryset = Objectes.objects.all()
@@ -94,9 +97,10 @@ class ObjectesViewSet(TokenProtectedModelViewSet):
         return Response(serializer.data)
 
 
-class TransaccioViewSet(TokenProtectedModelViewSet):
+class TransaccioViewSet(viewsets.ModelViewSet):
     queryset = Transaccio.objects.all()
     serializer_class = TransaccioSerializer
+    permission_classes = [RolPermission]
 
     def get_queryset(self):
         queryset = Transaccio.objects.all()
@@ -111,9 +115,10 @@ class TransaccioViewSet(TokenProtectedModelViewSet):
         return queryset
 
 
-class ComentarisViewSet(TokenProtectedModelViewSet):
+class ComentarisViewSet(viewsets.ModelViewSet):
     queryset = Comentaris.objects.all()
     serializer_class = ComentarisSerializer
+    permission_classes = [RolPermission]
 
     def get_queryset(self):
         queryset = Comentaris.objects.all()
