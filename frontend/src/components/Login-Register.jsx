@@ -50,30 +50,44 @@ export default function App() {
         const [telefon, setTelefon] = useState("");
         const [email, setEmail] = useState("");
         const [passwd, setPasswd] = useState("");
-        return(
-            <>
-                <label> Nom: </label>
-                <input type="text" name="Nom" id="input-nom" value={nom} onChange={(e) => setNom(e.target.value)}/>
-                <label> Cognom: </label>
-                <input type="text" name="Cognom" id="input-cognom" value={cognom} onChange={(e) => setCognom(e.target.value)}/>
-                <label> Email: </label>
-                <input type="text" name="Email" id="input-email" value={email} onChange={(e) => setEmail(e.target.value)}/>
-                <label> Telefon: </label>
-                <input type="text" name="Telefon" id="input-telefon" value={telefon} onChange={(e) => setTelefon(e.target.value)}/>
-                <label> Contrasenya: </label>
-                <input type="text" name="Contrasenya" id="input-psswd" value={passwd} onChange={(e) => setPasswd(e.target.value)}/>
-                <button type="button" onClick={() => register(
-                    {
-                        "email": email,
-                        "password": passwd,
-                        "nom": nom,
-                        "cognom": cognom,
-                        "telefon": telefon
-                    }
-                )}> Login </button>
-            </>
-        )
+        const [error, setError] = useState("");
+        async function handleRegistro() {
+            // 1. Registrar usuario
+            const reg = await register({
+                email,
+                password: passwd,
+                nom,
+                cognom,
+                telefon
+            });
+        const respuesta = await login({ email, password: passwd });
+        if (!respuesta.token) {
+            setError("Error al iniciar sesión después del registro");
+        } else {
+            setError("");
+            setOpen(false); // cerrar modal si quieres
+        }
     }
+
+    return (
+        <>
+            <label>Nom:</label>
+            <input value={nom} onChange={(e) => setNom(e.target.value)} />
+            <label>Cognom:</label>
+            <input value={cognom} onChange={(e) => setCognom(e.target.value)} />
+            <label>Email:</label>
+            <input value={email} onChange={(e) => setEmail(e.target.value)} />
+            <label>Telefon:</label>
+            <input value={telefon} onChange={(e) => setTelefon(e.target.value)} />
+            <label>Contrasenya:</label>
+            <input value={passwd} onChange={(e) => setPasswd(e.target.value)} />
+            <button type="button" onClick={handleRegistro}>
+                Registrar
+            </button>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+        </>
+    );
+    };
 return (
 <>
     <button className="afellir-comment" onClick={() => setOpen(true)}>

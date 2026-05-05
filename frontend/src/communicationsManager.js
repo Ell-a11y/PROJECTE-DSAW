@@ -26,6 +26,8 @@ export async function login(formData) {
         body: JSON.stringify(formData),
     });
     const data = await response.json();
+    console.log("LOGEADO");
+    
     return data;
 }
 
