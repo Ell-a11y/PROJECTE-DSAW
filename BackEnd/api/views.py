@@ -45,12 +45,6 @@ def login_api(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class TokenProtectedModelViewSet(viewsets.ModelViewSet):
-    def initial(self, request, *args, **kwargs):
-        super().initial(request, *args, **kwargs)
-        self.auth_user, self.auth_perfil = _obtener_user_desde_token(request)
-
-
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
@@ -140,31 +134,6 @@ def _generar_token(user):
         'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1),
     }
     return jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
-
-
-def _obtener_user_desde_token(request):
-    auth_header = request.META.get('HTTP_AUTHORIZATION', '')
-    if not auth_header.startswith('Bearer '):
-        raise AuthenticationFailed('Token requerido')
-
-    token = auth_header.split(' ', 1)[1].strip()
-    if not token:
-        raise AuthenticationFailed('Token requerido')
-
-    try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        raise AuthenticationFailed('Token caducado')
-    except jwt.InvalidTokenError:
-        raise AuthenticationFailed('Token invalido')
-
-    token_guardado = TokenJWT.objects.select_related('user').filter(token=token).first()
-    if not token_guardado:
-        raise AuthenticationFailed('Token invalido')
-
-    if token_guardado.user.id != payload.get('user_id'):
-        raise AuthenticationFailed('Token invalido')
-    return token_guardado.user, token_guardado.user
 
 
 def _autenticar(email, password):

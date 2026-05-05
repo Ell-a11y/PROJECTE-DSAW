@@ -11,7 +11,7 @@ class RolPermission(permissions.BasePermission):
 
         if request.method in permissions.SAFE_METHODS:
             view_name = getattr(view, "basename", "")
-            return view_name in {"objectes", "comentaris"}
+            return view_name in {"objectes", "comentaris", "categoria"}
 
         return False
 
