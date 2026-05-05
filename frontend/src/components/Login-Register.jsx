@@ -8,23 +8,48 @@ export default function App() {
     const Login = () => {
         const [email, setEmail] = useState("");
         const [passwd, setPasswd] = useState("");
-        return(
+        const [error, setError] = useState("");
+
+        async function handleLogin() {
+            const respuesta = await login({ email, password: passwd });
+            if (!respuesta.token) {
+                setError(respuesta.error);
+            } else {
+                setError("");
+                setOpen(false);
+            }
+        }
+
+        return (
             <>
-                <label> Coloca el teu email: </label>
-                <input type="email" name="email" id="email" placeholder="exemple@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)}/>
-                <label> Posar la teva password </label>
-                <input type="password" name="password" id="password" value={passwd} onChange={(e) => setPasswd(e.target.value)}/>
-                <button type="button" onClick={() => login({"email": email, "password": passwd})}> Login </button>
+                <label>Coloca el teu email:</label>
+                <input
+                    type="email"
+                    placeholder="exemple@gmail.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <label>Posar la teva password</label>
+                <input
+                    type="password"
+                    value={passwd}
+                    onChange={(e) => setPasswd(e.target.value)}
+                />
+
+                <button type="button" onClick={handleLogin}>
+                    Login
+                </button>
+
+                {error && <p style={{ color: "red" }}>{error}</p>}
             </>
-        )
-    }
+        );
+    };
     const Registro = () => {
         const [nom, setNom] = useState("");
         const [cognom, setCognom] = useState("");
         const [telefon, setTelefon] = useState("");
         const [email, setEmail] = useState("");
         const [passwd, setPasswd] = useState("");
-        console.log(mode)
         return(
             <>
                 <label> Nom: </label>
