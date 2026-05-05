@@ -151,7 +151,6 @@ export async function getCategories() {
         mode: 'cors',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
         credentials: 'include',
     });
