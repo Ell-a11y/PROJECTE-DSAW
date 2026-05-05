@@ -1,11 +1,10 @@
 // Importacions necesaries
 import { useState } from "react";
-import {login} from "./../communicationsManager"
+import {login, register} from "./../communicationsManager"
 export default function App() {
     // Estado para saber si el modal está abierto o cerrado
-    const [open, setOpen] = useState(false);
-    const [mode, setMode] = useState(false);
-    const [nuevoComentario, setNuevoComentario] = useState("");
+    const [open, setOpen] = useState(false); // Si se abre o se cierra
+    const [mode, setMode] = useState(false); // Saber si va a registro o login
     const Login = () => {
         const [email, setEmail] = useState("");
         const [passwd, setPasswd] = useState("");
@@ -20,10 +19,33 @@ export default function App() {
         )
     }
     const Registro = () => {
+        const [nom, setNom] = useState("");
+        const [cognom, setCognom] = useState("");
+        const [telefon, setTelefon] = useState("");
+        const [email, setEmail] = useState("");
+        const [passwd, setPasswd] = useState("");
         console.log(mode)
         return(
             <>
-                <p> Adios </p>
+                <label> Nom: </label>
+                <input type="text" name="Nom" id="input-nom" value={nom} onChange={(e) => setNom(e.target.value)}/>
+                <label> Cognom: </label>
+                <input type="text" name="Cognom" id="input-cognom" value={cognom} onChange={(e) => setCognom(e.target.value)}/>
+                <label> Email: </label>
+                <input type="text" name="Email" id="input-email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+                <label> Telefon: </label>
+                <input type="text" name="Telefon" id="input-telefon" value={telefon} onChange={(e) => setTelefon(e.target.value)}/>
+                <label> Contrasenya: </label>
+                <input type="text" name="Contrasenya" id="input-psswd" value={passwd} onChange={(e) => setPasswd(e.target.value)}/>
+                <button type="button" onClick={() => register(
+                    {
+                        "email": email,
+                        "password": passwd,
+                        "nom": nom,
+                        "cognom": cognom,
+                        "telefon": telefon
+                    }
+                )}> Login </button>
             </>
         )
     }

@@ -7,7 +7,7 @@ function App() {
       <nav>
         <MenuNav/>
         <Outlet/>
-        <Login></Login>
+        <Login/>
       </nav>
   );
 }
