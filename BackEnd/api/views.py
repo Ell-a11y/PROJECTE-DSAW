@@ -146,3 +146,26 @@ def _autenticar(email, password):
         return user
 
     return None
+
+@api_view(['GET'])
+def me_api(request):
+    token = request.headers.get('Authorization')
+    if not token:
+        raise AuthenticationFailed('Token no proporcionado')
+    try:
+        token = token.split(" ")[1]
+    except:
+        raise AuthenticationFailed('Formato de token inválido')
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        raise AuthenticationFailed('Token expirado')
+    except jwt.InvalidTokenError:
+        raise AuthenticationFailed('Token inválido')
+    user_id = payload['user_id']
+    try:
+        user = Usuaris.objects.get(id=user_id)
+    except Usuaris.DoesNotExist:
+        raise AuthenticationFailed('Usuario no encontrado')
+    serializer = UsuarisSerializer(user)
+    return Response(serializer.data)
