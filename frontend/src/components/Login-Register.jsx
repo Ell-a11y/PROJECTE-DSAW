@@ -4,7 +4,7 @@ import {login, register} from "./../communicationsManager"
 export default function App() {
     // Estado para saber si el modal está abierto o cerrado
     const [open, setOpen] = useState(false); // Si se abre o se cierra
-    const [mode, setMode] = useState(false); // Saber si va a registro o login
+    const [mode, setMode] = useState("registro"); // Saber si va a registro, login o logueado
     const Login = () => {
         const [email, setEmail] = useState("");
         const [passwd, setPasswd] = useState("");
@@ -17,6 +17,7 @@ export default function App() {
             } else {
                 setError("");
                 setOpen(false);
+                setMode("usuario")
             }
         }
 
@@ -52,20 +53,14 @@ export default function App() {
         const [passwd, setPasswd] = useState("");
         const [error, setError] = useState("");
         async function handleRegistro() {
-            // 1. Registrar usuario
-            const reg = await register({
-                email,
-                password: passwd,
-                nom,
-                cognom,
-                telefon
-            });
+        const reg = await register({email, password: passwd, nom, cognom, telefon});
         const respuesta = await login({ email, password: passwd });
         if (!respuesta.token) {
             setError("Error al iniciar sesión después del registro");
         } else {
             setError("");
-            setOpen(false); // cerrar modal si quieres
+            setOpen(false); // cerrar modal
+            setMode("usuario");
         }
     }
 
@@ -90,9 +85,13 @@ export default function App() {
     };
 return (
 <>
-    <button className="afellir-comment" onClick={() => setOpen(true)}>
-        Login / Registre
-    </button>
+    {mode !== "usuario" ? (
+        <button className="afellir-comment" onClick={() => setOpen(true)}>
+            Login / Registre
+        </button>
+    ) : (
+        <button className="afellir-comment" type="button" href="/usuaris/id"> Usuari </button>
+    )}
     {/*Si "open" es true: se muestra el modal sino nada*/}
 {open && (
     /* Cuando haces click fuera del modal, se cierra */
@@ -108,10 +107,11 @@ return (
             <button onClick={() => setOpen(false)}> ✕ </button>
         </div>
         {/* Contenido del modal */}
-        <button onClick={() => setMode(true)}> Login </button>
-        <button onClick={() => setMode(false)}> Registre </button>
-        {mode ? <Login/> : <Registro/>}
-    </div>
+        <button onClick={() => setMode("login")}> Login </button>
+        <button onClick={() => setMode("registro")}> Registre </button>
+        {mode === "login" && <Login />}
+        {mode === "registro" && <Registro />}
+        {mode === "usuario" && <button>Usuari</button>}    </div>
 </div>
 )}
 </>
