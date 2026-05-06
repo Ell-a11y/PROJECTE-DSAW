@@ -149,13 +149,24 @@ def _autenticar(email, password):
 
 @api_view(['GET'])
 def me_api(request):
-    token = request.headers.get('Authorization')
+    auth_header = request.headers.get('Authorization', '')
+    if not auth_header:
+        raise AuthenticationFailed('Token no proporcionado')
+
+    if not auth_header.startswith('Bearer '):
+        raise AuthenticationFailed('Formato de token inválido')
+
+    try:
+        token = auth_header.split(" ", 1)[1].strip()
+    except Exception:
+        raise AuthenticationFailed('Formato de token inválido')
+
     if not token:
         raise AuthenticationFailed('Token no proporcionado')
-    try:
-        token = token.split(" ")[1]
-    except:
-        raise AuthenticationFailed('Formato de token inválido')
+
+    if not TokenJWT.objects.filter(token=token).exists():
+        raise AuthenticationFailed('Token inválido')
+
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
