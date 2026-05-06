@@ -1,10 +1,19 @@
 // Importacions necesaries
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {login, register, getUser} from "./../communicationsManager"
 export default function App() {
     // Estado para saber si el modal está abierto o cerrado
     const [open, setOpen] = useState(false); // Si se abre o se cierra
-    const [mode, setMode] = useState("registro"); // Saber si va a registro, login o logueado
+    const [mode, setMode] = useState(() => {
+        return localStorage.getItem("token") ? "usuario" : "registro";
+    });
+    // OBLIGA A RENDEDIZAR
+    const [authReady, setAuthReady] = useState(false);
+    useEffect(() => {
+        setAuthReady(true);
+        console.log(mode);
+    }, []);
+    if (!authReady) return null;
     const Login = () => {
         const [email, setEmail] = useState("");
         const [passwd, setPasswd] = useState("");
@@ -24,23 +33,10 @@ export default function App() {
         return (
             <>
                 <label>Coloca el teu email:</label>
-                <input
-                    type="email"
-                    placeholder="exemple@gmail.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
+                <input type="email" placeholder="exemple@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)}/>
                 <label>Posar la teva password</label>
-                <input
-                    type="password"
-                    value={passwd}
-                    onChange={(e) => setPasswd(e.target.value)}
-                />
-
-                <button type="button" onClick={handleLogin}>
-                    Login
-                </button>
-
+                <input type="password" value={passwd} onChange={(e) => setPasswd(e.target.value)}/>
+                <button type="button" onClick={handleLogin}> Login </button>
                 {error && <p style={{ color: "red" }}>{error}</p>}
             </>
         );
@@ -76,48 +72,42 @@ export default function App() {
             <input value={telefon} onChange={(e) => setTelefon(e.target.value)} />
             <label>Contrasenya:</label>
             <input value={passwd} onChange={(e) => setPasswd(e.target.value)} />
-            <button type="button" onClick={handleRegistro}>
-                Registrar
-            </button>
+            <button type="button" onClick={handleRegistro}> Registrar </button>
             {error && <p style={{ color: "red" }}>{error}</p>}
         </>
     );
     };
 return (
 <>
-    {mode !== "usuario" ? (
+    {mode != "usuario" ? (
         <button className="afellir-comment" onClick={() => setOpen(true)}>
             Login / Registre
         </button>
     ) : (
-        <button className="afellir-comment" type="button" /*href="/usuaris/id"*/ onClick={
-            async function cargar() {
+        <button
+            className="afellir-comment"
+            type="button"
+            onClick={async () => {
                 const data = await getUser();
-            }
-        }> Usuari </button>
+                console.log(data);
+            }}>
+            Usuari
+        </button>
     )}
-    {/*Si "open" es true: se muestra el modal sino nada*/}
-{open && (
-    /* Cuando haces click fuera del modal, se cierra */
-<div className="modal-backdrop" onClick={() => setOpen(false)}>
-    {/* Caja del modal */}
-    {/* Evita que al hacer click dentro del modal se cierre automáticamente */}
-    <div className="modal" onClick={(e) => e.stopPropagation()}>
-        {/* Cabecera del modal */}
-        <div className="modal-header">
-            {/* Título */}
-            <h2> Inicia sesio amb el teu compte o crea el compte </h2>
-            {/* Botón para cerrar */}
-            <button onClick={() => setOpen(false)}> ✕ </button>
+    {open && (
+        <div className="modal-backdrop" onClick={() => setOpen(false)}>
+            <div className="modal" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                    <h2> Inicia sesio amb el teu compte o crea el compte </h2>
+                    <button onClick={() => setOpen(false)}> ✕ </button>
+                </div>
+                <button onClick={() => setMode("login")}> Login </button>
+                <button onClick={() => setMode("registro")}> Registre </button>
+                {mode === "login" && <Login />}
+                {mode === "registro" && <Registro />}
+            </div>
         </div>
-        {/* Contenido del modal */}
-        <button onClick={() => setMode("login")}> Login </button>
-        <button onClick={() => setMode("registro")}> Registre </button>
-        {mode === "login" && <Login />}
-        {mode === "registro" && <Registro />}
-        {mode === "usuario" && <button>Usuari</button>}    </div>
-</div>
-)}
+    )}
 </>
-  );
+);
 }
