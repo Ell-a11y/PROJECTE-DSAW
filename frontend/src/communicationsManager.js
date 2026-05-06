@@ -154,4 +154,35 @@ export async function getCategories() {
         },
         credentials: 'include',
     });
+    const data = await response.json();
+    return data;
+}
+
+async function getOneUser() {
+    const response = await fetch(`${SERVER_URL}/usuaris/`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        credentials: 'include',
+    });
+    const data = await response.json();
+    return data;
+}
+
+export async function getDistricts() {
+    const response = await fetch(`https://opendata-ajuntament.barcelona.cat/data/api/action/datastore_search?resource_id=576bc645-9481-4bc4-b8bf-f5972c20df3f`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    const data = await response.json();
+    return data.result.records.map(district => ({
+        id: district._id,
+        name: district.nom_districte,
+    }));
 }
