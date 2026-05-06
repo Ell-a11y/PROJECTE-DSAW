@@ -16,6 +16,7 @@ export async function register(formData) {
 }
 
 export async function login(formData) {
+    console.log(formData);
     // Autentica al usuario con sus credenciales y mantiene la sesión con cookies.
     const response = await fetch(`${SERVER_URL}/api/login/`, {
         method: 'POST',
@@ -23,10 +24,11 @@ export async function login(formData) {
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify(formData),
     });
+    console.log(response)
     const data = await response.json();
+    console.log(data)
     return data;
 }
 
@@ -149,9 +151,7 @@ export async function getCategories() {
         mode: 'cors',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
         credentials: 'include',
     });
 }
-

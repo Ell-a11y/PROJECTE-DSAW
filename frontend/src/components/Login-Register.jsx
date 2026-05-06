@@ -1,12 +1,55 @@
 // Importacions necesaries
 import { useState } from "react";
-import "./../communicationsManager"
-
+import {login, register} from "./../communicationsManager"
 export default function App() {
-  // Estado para saber si el modal está abierto o cerrado
-  const [open, setOpen] = useState(false);
-  const [nuevoComentario, setNuevoComentario] = useState("");
-  return (
+    // Estado para saber si el modal está abierto o cerrado
+    const [open, setOpen] = useState(false); // Si se abre o se cierra
+    const [mode, setMode] = useState(false); // Saber si va a registro o login
+    const Login = () => {
+        const [email, setEmail] = useState("");
+        const [passwd, setPasswd] = useState("");
+        return(
+            <>
+                <label> Coloca el teu email: </label>
+                <input type="email" name="email" id="email" placeholder="exemple@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)}/>
+                <label> Posar la teva password </label>
+                <input type="password" name="password" id="password" value={passwd} onChange={(e) => setPasswd(e.target.value)}/>
+                <button type="button" onClick={() => login({"email": email, "password": passwd})}> Login </button>
+            </>
+        )
+    }
+    const Registro = () => {
+        const [nom, setNom] = useState("");
+        const [cognom, setCognom] = useState("");
+        const [telefon, setTelefon] = useState("");
+        const [email, setEmail] = useState("");
+        const [passwd, setPasswd] = useState("");
+        console.log(mode)
+        return(
+            <>
+                <label> Nom: </label>
+                <input type="text" name="Nom" id="input-nom" value={nom} onChange={(e) => setNom(e.target.value)}/>
+                <label> Cognom: </label>
+                <input type="text" name="Cognom" id="input-cognom" value={cognom} onChange={(e) => setCognom(e.target.value)}/>
+                <label> Email: </label>
+                <input type="text" name="Email" id="input-email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+                <label> Telefon: </label>
+                <input type="text" name="Telefon" id="input-telefon" value={telefon} onChange={(e) => setTelefon(e.target.value)}/>
+                <label> Contrasenya: </label>
+                <input type="text" name="Contrasenya" id="input-psswd" value={passwd} onChange={(e) => setPasswd(e.target.value)}/>
+                <button type="button" onClick={() => register(
+                    {
+                        "email": email,
+                        "password": passwd,
+                        "nom": nom,
+                        "cognom": cognom,
+                        "telefon": telefon
+                    }
+                )}> Login </button>
+            </>
+        )
+    }
+return (
 <>
     <button className="afellir-comment" onClick={() => setOpen(true)}>
         Login / Registre
@@ -21,24 +64,14 @@ export default function App() {
         {/* Cabecera del modal */}
         <div className="modal-header">
             {/* Título */}
-            <h2>Posa el teu comentari...</h2>
+            <h2> Inicia sesio amb el teu compte o crea el compte </h2>
             {/* Botón para cerrar */}
             <button onClick={() => setOpen(false)}> ✕ </button>
         </div>
         {/* Contenido del modal */}
-        <form className="modal-content">
-            <label id="form_coment_label"> Comentari: </label>
-            <textarea value={nuevoComentario} onChange={(e) => setNuevoComentario(e.target.value)} placeholder="Escriu el teu comentari..." className="comentari-textarea"/>
-            <button type="button" onClick={() => (setOpen(false), function() {
-                alert('Comentari: ' + nuevoComentario);
-                const Objeto = {
-                    Comentari: nuevoComentario,
-                    User: 7,
-                    Objecte: idObj,
-                };
-                commentsByObject(Objeto);
-                })}> Enviar comentari </button>
-        </form>
+        <button onClick={() => setMode(true)}> Login </button>
+        <button onClick={() => setMode(false)}> Registre </button>
+        {mode ? <Login/> : <Registro/>}
     </div>
 </div>
 )}
