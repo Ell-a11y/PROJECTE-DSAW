@@ -26,8 +26,9 @@ export async function login(formData) {
         body: JSON.stringify(formData),
     });
     const data = await response.json();
-    console.log("LOGEADO");
-    
+    if (data.token) {
+        localStorage.setItem("token", data.token);
+    }    
     return data;
 }
 
@@ -154,5 +155,18 @@ export async function getCategories() {
         credentials: 'include',
     });
     const data = await response.json();
+    return data;
+}
+
+export async function getUser() {
+    // Consulta la informacion de un usuario en base el token.
+    const response = await fetch(`${SERVER_URL}/api/me/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        }
+    });
+    const data =  await response.json();
     return data;
 }

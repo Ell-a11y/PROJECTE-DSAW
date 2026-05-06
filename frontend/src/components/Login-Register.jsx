@@ -1,6 +1,6 @@
 // Importacions necesaries
 import { useState } from "react";
-import {login, register} from "./../communicationsManager"
+import {login, register, getUser} from "./../communicationsManager"
 export default function App() {
     // Estado para saber si el modal está abierto o cerrado
     const [open, setOpen] = useState(false); // Si se abre o se cierra
@@ -90,7 +90,11 @@ return (
             Login / Registre
         </button>
     ) : (
-        <button className="afellir-comment" type="button" href="/usuaris/id"> Usuari </button>
+        <button className="afellir-comment" type="button" /*href="/usuaris/id"*/ onClick={
+            async function cargar() {
+                const data = await getUser();
+            }
+        }> Usuari </button>
     )}
     {/*Si "open" es true: se muestra el modal sino nada*/}
 {open && (
