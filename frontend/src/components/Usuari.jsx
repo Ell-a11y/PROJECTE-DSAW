@@ -17,8 +17,7 @@ export default function App() {
     }, [persona]);
     return (<>
         <section>
-            <h2>Nom: {persona.nom} </h2>
-            <h2>Cognom: {persona.cognom} </h2>
+            <h2>Nom: {persona.nom} {persona.cognom} </h2>
             <h2>Email: {persona.email} </h2>
         </section>
     </>)

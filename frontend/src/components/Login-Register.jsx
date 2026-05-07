@@ -85,9 +85,10 @@ return (
                 if(data.detail == "Token expirado") {
                     localStorage.removeItem("token");
                     setMode("login");
+                    alert("La teva sesio a expirat.")
                     return null;
                 }
-                console.log(data);
+                window.location.href = "/usuari";
             }}>
             Usuari
         </button>

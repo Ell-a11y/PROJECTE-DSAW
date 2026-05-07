@@ -10,9 +10,9 @@ const CardObject = ({ resource: recurso }) => {
     descripcio,
     estat,
     districte,
-    categoria,
+    categoria_nom,
     qualitat,
-    usuario,
+    usuario_nom,
   } = recurso;
 
   const mesInfo = function() {
@@ -38,9 +38,9 @@ const CardObject = ({ resource: recurso }) => {
         <div className="card-meta">
           <span className="meta-item">Estat: {estat}</span>
           <span className="meta-item">Districte: {districte}</span>
-          <span className="meta-item">Categoria: {categoria}</span>
+          <span className="meta-item">Categoria: {categoria_nom}</span>
           <span className="meta-item">Qualitat: {qualitat}</span>
-          <span className="meta-item">Usuari: {usuario}</span>
+          <span className="meta-item">Usuari: {usuario_nom}</span>
         </div>
         <button type="button" className="meta-button" id="paginaObject" onClick={mesInfo}>Pagina del producte</button>
       </div>

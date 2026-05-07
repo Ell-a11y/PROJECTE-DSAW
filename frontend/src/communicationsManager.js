@@ -157,8 +157,21 @@ export async function getCategories() {
     const data = await response.json();
     return data;
 }
+export async function getUser() {
+    const token = localStorage.getItem("token");
 
-async function getOneUser() {
+    const response = await fetch(`${SERVER_URL}/api/me/`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    return await response.json();
+}
+
+export async function getOneUser() {
     const response = await fetch(`${SERVER_URL}/usuaris/`, {
         method: 'GET',
         mode: 'cors',

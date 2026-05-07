@@ -1,52 +1,84 @@
+import { useEffect, useState } from "react";
 import CardObject from "./components/CardObject";
-import "./App1.css";
+import { objectsList, getOneUser, getCategories, getUser } from "./communicationsManager";
 
-const recursosPrueba = [
-  {
-    id:1,
-    nom: "Taladro Bosch",
-    imatge:
-      "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=800&q=80",
-    categoria: 2,
-    usuario: 1,
-    descripcio: "Taladro en buen estado para tareas de bricolaje.",
-    qualitat: "normal",
-    estat: "prestamo",
-    districte: "Barcelona",
-  },
-  {
-    id:2,
-    nom: "Bicicleta urbana",
-    imatge:
-      "https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=800&q=80",
-    categoria: 4,
-    usuario: 2,
-    descripcio: "Bici de paseo ideal para desplazamientos cortos.",
-    qualitat: "alta",
-    estat: "disponible",
-    districte: "Gracia",
-  },
-];
-
-function App() {
-  return (
-    <main
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        gap: "16px",
-        alignItems: "center",
-        justifyContent: "center",
-        flexWrap: "wrap",
-        padding: "24px",
-        background: "#f2f4f7",
-      }}
-    >
-      {recursosPrueba.map((recurso) => (
-        <CardObject key={`${recurso.nom}-${recurso.usuario}`} resource={recurso} />
-      ))}
-    </main>
-  );
+export default function App() {
+    const [lista, setLista] = useState([]);
+    useEffect(() => {
+        async function cargarTodo() {
+            const objetos = await objectsList();
+            let registre = null;
+            try {  // si no hay token o falla
+                registre = await getUser();
+            } catch {
+                registre = null;
+            }
+            let usuariosLista = []; // Guardar los Users
+            if (registre) {
+                try {
+                    // OJO: si getOneUser NO devuelve lista, aquí deberías usar getUsers()
+                    usuariosLista = await getOneUser();
+                    if (!Array.isArray(usuariosLista)) {
+                        usuariosLista = []; // por si devuelve un objeto en vez de array
+                    }
+                } catch {
+                    usuariosLista = [];
+                }
+            }
+            // 4. Categorías: con fallback
+            let categoriasLista = [];
+            try {
+                categoriasLista = await getCategories();
+            } catch {
+                categoriasLista = [];
+            }
+            // 5. Normalizar
+            const normalizados = objetos.map(obj => {
+                // usuario: por defecto Anonim
+                let userName = "Anonim";
+                if (registre && Array.isArray(usuariosLista) && usuariosLista.length > 0) {
+                    const userObj = usuariosLista.find(
+                        u => Number(u.id) === Number(obj.users)
+                    );
+                    if (userObj && userObj.nom) {
+                        userName = userObj.nom;
+                    }
+                }
+                const categoriaObj = categoriasLista.find(
+                    c => Number(c.id) === Number(obj.categoria)
+                );
+                const categoriaName = categoriaObj ? categoriaObj.categoria : "Sense categoria";
+                return {
+                    id: obj.id,
+                    nom: obj.nom,
+                    imatge: obj.imatge,
+                    usuario_nom: userName,
+                    categoria_nom: categoriaName,
+                    descripcio: obj.descipcio,
+                    qualitat: obj.qualitat,
+                    estat: obj.estat,
+                    districte: obj.districte
+                };
+            });
+            setLista(normalizados);
+        }
+        cargarTodo();
+    }, []);
+    return (
+        <main
+            style={{
+                minHeight: "100vh",
+                display: "flex",
+                gap: "16px",
+                alignItems: "center",
+                justifyContent: "center",
+                flexWrap: "wrap",
+                padding: "24px",
+                background: "#f2f4f7",
+            }}>
+            {lista.map((recurso) => (
+                <CardObject key={recurso.id} resource={recurso} />
+            ))}
+        </main>
+    );
 }
-
-export default App;
