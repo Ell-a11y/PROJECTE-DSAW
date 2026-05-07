@@ -7,13 +7,6 @@ export default function App() {
     const [mode, setMode] = useState(() => {
         return localStorage.getItem("token") ? "usuario" : "registro";
     });
-    // OBLIGA A RENDEDIZAR
-    const [authReady, setAuthReady] = useState(false);
-    useEffect(() => {
-        setAuthReady(true);
-        console.log(mode);
-    }, []);
-    if (!authReady) return null;
     const Login = () => {
         const [email, setEmail] = useState("");
         const [passwd, setPasswd] = useState("");
@@ -89,6 +82,11 @@ return (
             type="button"
             onClick={async () => {
                 const data = await getUser();
+                if(data.detail == "Token expirado") {
+                    localStorage.removeItem("token");
+                    setMode("login");
+                    return null;
+                }
                 console.log(data);
             }}>
             Usuari
