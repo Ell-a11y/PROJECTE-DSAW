@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import UserInfo from "./components/Usuari";
-import CardObject from "./components/ObjectPage";
+import CardObject from "./components/CardObject";
 import { objectsList, getUser } from "./communicationsManager";
 import AddObject from "./components/AddObject";
 export default function App() {
@@ -9,7 +9,14 @@ export default function App() {
         async function cargarDatos() {
             const objects = await objectsList();
             const user = await getUser();
-            const filtrados = objects.filter(obj => Number(obj.usuario) == Number(user.id));
+            console.log(objects)
+            const filtrados = [];
+            for(const obj of objects){
+                if(obj.users == user.id) {
+                    console.log("OBJETO PERSONA")
+                    filtrados.push(obj)
+                }
+            }
             setLista(filtrados);
             console.log("FILTRADOS: " + lista)
         }
@@ -27,7 +34,16 @@ export default function App() {
                     <summary> Afelleix el teu objecte </summary>
                     <AddObject/>
                 </details>
-                <section>
+                <section style={{
+                minHeight: "25vh",
+                display: "flex",
+                gap: "16px",
+                alignItems: "center",
+                justifyContent: "center",
+                flexWrap: "wrap",
+                padding: "24px",
+            }}>
+
                     {lista.map((recurso) => (
                         <CardObject
                             key={`${recurso.nom}-${recurso.usuario}`}

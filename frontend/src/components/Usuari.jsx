@@ -7,7 +7,6 @@ export default function App() {
     useEffect(() => {
         async function InfoUser() {
             const data = await getUser();
-            console.log("PERSONA");
             setPersona({nom: data.nom, cognom: data.cognom, email: data.email});
         }
         InfoUser();

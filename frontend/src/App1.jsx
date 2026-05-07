@@ -13,10 +13,9 @@ export default function App() {
             } catch {
                 registre = null;
             }
-            let usuariosLista = []; // Guardar los Users
+            let usuariosLista = []; // Guardar los Usuarios
             if (registre) {
                 try {
-                    // OJO: si getOneUser NO devuelve lista, aquí deberías usar getUsers()
                     usuariosLista = await getOneUser();
                     if (!Array.isArray(usuariosLista)) {
                         usuariosLista = []; // por si devuelve un objeto en vez de array
@@ -32,7 +31,6 @@ export default function App() {
             } catch {
                 categoriasLista = [];
             }
-            // 5. Normalizar
             const normalizados = objetos.map(obj => {
                 // usuario: por defecto Anonim
                 let userName = "Anonim";
@@ -74,7 +72,7 @@ export default function App() {
                 justifyContent: "center",
                 flexWrap: "wrap",
                 padding: "24px",
-                background: "#f2f4f7",
+                background: "#b2d1ff",
             }}>
             {lista.map((recurso) => (
                 <CardObject key={recurso.id} resource={recurso} />
