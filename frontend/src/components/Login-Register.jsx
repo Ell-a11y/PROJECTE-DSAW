@@ -1,80 +1,111 @@
 // Importacions necesaries
-import { useState } from "react";
-import {login, register} from "./../communicationsManager"
+import { useState, useEffect } from "react";
+import {login, register, getUser} from "./../communicationsManager"
 export default function App() {
     // Estado para saber si el modal está abierto o cerrado
     const [open, setOpen] = useState(false); // Si se abre o se cierra
-    const [mode, setMode] = useState(false); // Saber si va a registro o login
+    const [mode, setMode] = useState(() => {
+        return localStorage.getItem("token") ? "usuario" : "registro";
+    });
     const Login = () => {
         const [email, setEmail] = useState("");
         const [passwd, setPasswd] = useState("");
-        return(
+        const [error, setError] = useState("");
+
+        async function handleLogin() {
+            const respuesta = await login({ email, password: passwd });
+            if (!respuesta.token) {
+                setError(respuesta.error);
+            } else {
+                setError("");
+                setOpen(false);
+                setMode("usuario")
+            }
+        }
+
+        return (
             <>
-                <label> Coloca el teu email: </label>
-                <input type="email" name="email" id="email" placeholder="exemple@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)}/>
-                <label> Posar la teva password </label>
-                <input type="password" name="password" id="password" value={passwd} onChange={(e) => setPasswd(e.target.value)}/>
-                <button type="button" onClick={() => login({"email": email, "password": passwd})}> Login </button>
+                <label>Coloca el teu email:</label>
+                <input type="email" placeholder="exemple@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)}/>
+                <label>Posar la teva password</label>
+                <input type="password" value={passwd} onChange={(e) => setPasswd(e.target.value)}/>
+                <button type="button" onClick={handleLogin}> Login </button>
+                {error && <p style={{ color: "red" }}>{error}</p>}
             </>
-        )
-    }
+        );
+    };
     const Registro = () => {
         const [nom, setNom] = useState("");
         const [cognom, setCognom] = useState("");
         const [telefon, setTelefon] = useState("");
         const [email, setEmail] = useState("");
         const [passwd, setPasswd] = useState("");
-        console.log(mode)
-        return(
-            <>
-                <label> Nom: </label>
-                <input type="text" name="Nom" id="input-nom" value={nom} onChange={(e) => setNom(e.target.value)}/>
-                <label> Cognom: </label>
-                <input type="text" name="Cognom" id="input-cognom" value={cognom} onChange={(e) => setCognom(e.target.value)}/>
-                <label> Email: </label>
-                <input type="text" name="Email" id="input-email" value={email} onChange={(e) => setEmail(e.target.value)}/>
-                <label> Telefon: </label>
-                <input type="text" name="Telefon" id="input-telefon" value={telefon} onChange={(e) => setTelefon(e.target.value)}/>
-                <label> Contrasenya: </label>
-                <input type="text" name="Contrasenya" id="input-psswd" value={passwd} onChange={(e) => setPasswd(e.target.value)}/>
-                <button type="button" onClick={() => register(
-                    {
-                        "email": email,
-                        "password": passwd,
-                        "nom": nom,
-                        "cognom": cognom,
-                        "telefon": telefon
-                    }
-                )}> Login </button>
-            </>
-        )
+        const [error, setError] = useState("");
+        async function handleRegistro() {
+        const reg = await register({email, password: passwd, nom, cognom, telefon});
+        const respuesta = await login({ email, password: passwd });
+        if (!respuesta.token) {
+            setError("Error al iniciar sesión después del registro");
+        } else {
+            setError("");
+            setOpen(false); // cerrar modal
+            setMode("usuario");
+        }
     }
+
+    return (
+        <>
+            <label>Nom:</label>
+            <input value={nom} onChange={(e) => setNom(e.target.value)} />
+            <label>Cognom:</label>
+            <input value={cognom} onChange={(e) => setCognom(e.target.value)} />
+            <label>Email:</label>
+            <input value={email} onChange={(e) => setEmail(e.target.value)} />
+            <label>Telefon:</label>
+            <input value={telefon} onChange={(e) => setTelefon(e.target.value)} />
+            <label>Contrasenya:</label>
+            <input value={passwd} onChange={(e) => setPasswd(e.target.value)} />
+            <button type="button" onClick={handleRegistro}> Registrar </button>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+        </>
+    );
+    };
 return (
 <>
-    <button className="afellir-comment" onClick={() => setOpen(true)}>
-        Login / Registre
-    </button>
-    {/*Si "open" es true: se muestra el modal sino nada*/}
-{open && (
-    /* Cuando haces click fuera del modal, se cierra */
-<div className="modal-backdrop" onClick={() => setOpen(false)}>
-    {/* Caja del modal */}
-    {/* Evita que al hacer click dentro del modal se cierre automáticamente */}
-    <div className="modal" onClick={(e) => e.stopPropagation()}>
-        {/* Cabecera del modal */}
-        <div className="modal-header">
-            {/* Título */}
-            <h2> Inicia sesio amb el teu compte o crea el compte </h2>
-            {/* Botón para cerrar */}
-            <button onClick={() => setOpen(false)}> ✕ </button>
+    {mode != "usuario" ? (
+        <button className="afellir-comment" onClick={() => setOpen(true)}>
+            Login / Registre
+        </button>
+    ) : (
+        <button
+            className="afellir-comment"
+            type="button"
+            onClick={async () => {
+                const data = await getUser();
+                if(data.detail == "Token expirado") {
+                    localStorage.removeItem("token");
+                    setMode("login");
+                    return null;
+                }
+                console.log(data);
+            }}>
+            Usuari
+        </button>
+    )}
+    {open && (
+        <div className="modal-backdrop" onClick={() => setOpen(false)}>
+            <div className="modal" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                    <h2> Inicia sesio amb el teu compte o crea el compte </h2>
+                    <button onClick={() => setOpen(false)}> ✕ </button>
+                </div>
+                <button onClick={() => setMode("login")}> Login </button>
+                <button onClick={() => setMode("registro")}> Registre </button>
+                {mode === "login" && <Login />}
+                {mode === "registro" && <Registro />}
+            </div>
         </div>
-        {/* Contenido del modal */}
-        <button onClick={() => setMode(true)}> Login </button>
-        <button onClick={() => setMode(false)}> Registre </button>
-        {mode ? <Login/> : <Registro/>}
-    </div>
-</div>
-)}
+    )}
 </>
-  );
+);
 }
