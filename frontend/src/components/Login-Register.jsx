@@ -1,12 +1,20 @@
 // Importacions necesaries
 import { useState, useEffect } from "react";
 import {login, register, getUser} from "./../communicationsManager"
+import { useAuth } from "../AuthContext";
 export default function App() {
+    const { status, refreshSession, logout } = useAuth();
     // Estado para saber si el modal está abierto o cerrado
     const [open, setOpen] = useState(false); // Si se abre o se cierra
-    const [mode, setMode] = useState(() => {
-        return localStorage.getItem("token") ? "usuario" : "registro";
-    });
+    const [mode, setMode] = useState("registro");
+
+    useEffect(() => {
+        if (status === "authenticated") {
+            setMode("usuario");
+        } else if (status === "unauthenticated") {
+            setMode("registro");
+        }
+    }, [status]);
     const Login = () => {
         const [email, setEmail] = useState("");
         const [passwd, setPasswd] = useState("");
@@ -19,6 +27,7 @@ export default function App() {
             } else {
                 setError("");
                 setOpen(false);
+                await refreshSession();
                 setMode("usuario")
             }
         }
@@ -42,13 +51,14 @@ export default function App() {
         const [passwd, setPasswd] = useState("");
         const [error, setError] = useState("");
         async function handleRegistro() {
-        const reg = await register({email, password: passwd, nom, cognom, telefon});
+        await register({email, password: passwd, nom, cognom, telefon});
         const respuesta = await login({ email, password: passwd });
         if (!respuesta.token) {
             setError("Error al iniciar sesión después del registro");
         } else {
             setError("");
             setOpen(false); // cerrar modal
+            await refreshSession();
             setMode("usuario");
         }
     }
@@ -83,7 +93,7 @@ return (
             onClick={async () => {
                 const data = await getUser();
                 if(data.detail == "Token expirado") {
-                    localStorage.removeItem("token");
+                    logout();
                     setMode("login");
                     alert("La teva sesio a expirat.")
                     return null;
