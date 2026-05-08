@@ -8,6 +8,7 @@ from rest_framework.decorators import action, api_view
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from .models import Categoria, Usuaris, Objectes, Transaccio, Comentaris, TokenJWT
+from .jwt_token import extract_bearer_token_or_raise, validate_stored_jwt_token_or_raise
 from .permissions import RolPermission
 from .serializers import (
     CategoriaSerializer, UsuarisSerializer, ObjectesSerializer,
@@ -149,30 +150,8 @@ def _autenticar(email, password):
 
 @api_view(['GET'])
 def me_api(request):
-    auth_header = request.headers.get('Authorization', '')
-    if not auth_header:
-        raise AuthenticationFailed('Token no proporcionado')
-
-    if not auth_header.startswith('Bearer '):
-        raise AuthenticationFailed('Formato de token inválido')
-
-    try:
-        token = auth_header.split(" ", 1)[1].strip()
-    except Exception:
-        raise AuthenticationFailed('Formato de token inválido')
-
-    if not token:
-        raise AuthenticationFailed('Token no proporcionado')
-
-    if not TokenJWT.objects.filter(token=token).exists():
-        raise AuthenticationFailed('Token inválido')
-
-    try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        raise AuthenticationFailed('Token expirado')
-    except jwt.InvalidTokenError:
-        raise AuthenticationFailed('Token inválido')
+    token = extract_bearer_token_or_raise(request)
+    payload = validate_stored_jwt_token_or_raise(token)
     user_id = payload['user_id']
     try:
         user = Usuaris.objects.get(id=user_id)
