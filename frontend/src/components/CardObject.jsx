@@ -1,4 +1,5 @@
 import "./CardObject.css";
+import { Link } from "react-router-dom";
 
 const CardObject = ({ resource: recurso }) => {
   if (!recurso) return null;
@@ -15,9 +16,6 @@ const CardObject = ({ resource: recurso }) => {
     usuario_nom,
   } = recurso;
 
-  const mesInfo = function() {
-    window.location.href = `./app2/?id=${id}`;
-  }
   return (
     <article className="card-component">
       <img
@@ -42,7 +40,7 @@ const CardObject = ({ resource: recurso }) => {
           <span className="meta-item">Qualitat: {qualitat}</span>
           <span className="meta-item">Usuari: {usuario_nom}</span>
         </div>
-        <button type="button" className="meta-button" id="paginaObject" onClick={mesInfo}>Pagina del producte</button>
+        <Link to={`/app2/${id}`} className="meta-button">Pagina del producte</Link>
       </div>
     </article>
   );

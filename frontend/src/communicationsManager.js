@@ -45,6 +45,18 @@ export async function objectsList() {
     return data;
 }
 
+export async function getOneObject(id) {
+    const response = await fetch(`${SERVER_URL}/objectes/${id}/`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    const data = await response.json();
+    return data;
+}
+
 export async function createOneObject(formData) {
     // Crea un nuevo objeto en el sistema con los datos proporcionados.
     const response = await fetch(`${SERVER_URL}/objectes/`, {
@@ -157,6 +169,20 @@ export async function getCategories() {
     const data = await response.json();
     return data;
 }
+
+export async function getCategoria(id) {
+    // Consulta el listado de categorías disponibles para clasificar objetos.
+    const response = await fetch(`${SERVER_URL}/categories/${id}/`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+    });
+    const data = await response.json();
+    return data;
+}
 export async function getUser() {
     const token = localStorage.getItem("token");
 
@@ -173,6 +199,20 @@ export async function getUser() {
 
 export async function getOneUser() {
     const response = await fetch(`${SERVER_URL}/usuaris/`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        credentials: 'include',
+    });
+    const data = await response.json();
+    return data;
+}
+
+export async function getUsuari(id) {
+    const response = await fetch(`${SERVER_URL}/usuaris/${id}/`, {
         method: 'GET',
         mode: 'cors',
         headers: {
