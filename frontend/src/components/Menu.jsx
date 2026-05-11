@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getCategories } from "./../communicationsManager";
+import { Link } from "react-router-dom";
 
 function App() {
   const [categorias, setCategorias] = useState([]);
@@ -19,7 +20,7 @@ function App() {
 
         {categorias.map(cat => (
           <li key={cat.id}>
-            <a href="/">{cat.categoria}</a>
+            <Link to={`/categoria/${cat.categoria}`}>{cat.categoria}</Link>
           </li>
         ))}
       </details>
