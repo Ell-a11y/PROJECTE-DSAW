@@ -1,8 +1,13 @@
 import "./CardObject.css";
-import { Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
+import { deleteOneObject } from "./../communicationsManager";
+import { useState } from "react";
 
 const CardObject = ({ resource: recurso }) => {
-  if (!recurso) return null;
+  const [visible, setVisible] = useState(true);
+  const location = useLocation();
+
+  if (!recurso || !visible) return null;
 
   const {
     id,
@@ -15,6 +20,13 @@ const CardObject = ({ resource: recurso }) => {
     qualitat,
     usuario_nom,
   } = recurso;
+
+  const isUserPage = location.pathname === "/usuari";
+
+  async function borrar() {
+    await deleteOneObject(id);
+    setVisible(false);
+  }
 
   return (
     <article className="card-component">
@@ -40,8 +52,17 @@ const CardObject = ({ resource: recurso }) => {
           <span className="meta-item">Qualitat: {qualitat}</span>
           <span className="meta-item">Usuari: {usuario_nom}</span>
         </div>
-        <Link to={`/app2/${id}`} className="meta-button">Pagina del producte</Link>
+
+        <Link to={`/app2/${id}`} className="meta-button">
+          Pagina del producte
+        </Link>
       </div>
+      {isUserPage && (
+        <>
+          <button onClick={borrar}>Eliminar</button>
+          <button>Editar...</button>
+        </>
+      )}
     </article>
   );
 };
