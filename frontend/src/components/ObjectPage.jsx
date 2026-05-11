@@ -67,9 +67,13 @@ const objectPage = ({ resource, comment, id }) => {
 
   if (!resource) return <p>Carregant...</p>;
 
-  if (recurso.id !== idObj) return <p>Carregant...</p>;
-  console.log(recurso);
-  
+  if (recurso.id !== idObj)
+    return (
+      <div>
+        <p>Carregant...</p>
+        <button onClick={() => navigate(`/`)}>Tornar a la pàgina principal</button>
+      </div>
+    );
   return (
     <article className="main">
       <h1 className="titol-section"> {recurso.nom} </h1>
@@ -94,7 +98,7 @@ const objectPage = ({ resource, comment, id }) => {
           <span className="obj-item">Usuari: {recurso.user_nom}</span>
         </article>
       </article>
-      {(recurso.estat === "per_prestat" || recurso.estat === "donatiu") && <button
+      {(recurso.users != user?.id && (recurso.estat === "per_prestat" || recurso.estat === "donatiu")) && <button
         onClick={() => {
           if (status === "checking") {
             return;
