@@ -11,7 +11,7 @@ export default function App() {
         id: obj.id,
         nom: obj.nom,
         imatge: obj.imatge,
-        usuario_nom: obj.user_nom ?? "Anonim",
+        user_nom: obj.user_nom ?? "Anonim",
         categoria_nom: obj.categoria_nom ?? "Sense categoria",
         descripcio: obj.descipcio ?? obj.descripcio,
         qualitat: obj.qualitat,

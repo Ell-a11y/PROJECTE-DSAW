@@ -18,9 +18,20 @@ function App() {
     fetchObject();    
   }, [id]);
 
+  const refreshComments = async () => {
+    const next = await commentsByObject(id);
+    setComments(next);
+  };
+
   return (
     <main className="app2-page">
-      <ObjectPage key={id} resource={object} comment={comments} id={id} />
+      <ObjectPage
+        key={id}
+        resource={object}
+        comment={comments}
+        id={id}
+        onCommentAdded={refreshComments}
+      />
     </main>
   );
 }

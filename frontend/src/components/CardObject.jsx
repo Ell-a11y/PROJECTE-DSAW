@@ -13,7 +13,8 @@ const CardObject = ({ resource: recurso }) => {
     districte,
     categoria_nom,
     qualitat,
-    usuario_nom,
+    user_nom,
+  
   } = recurso;
 
   return (
@@ -38,7 +39,7 @@ const CardObject = ({ resource: recurso }) => {
           <span className="meta-item">Districte: {districte}</span>
           <span className="meta-item">Categoria: {categoria_nom}</span>
           <span className="meta-item">Qualitat: {qualitat}</span>
-          <span className="meta-item">Usuari: {usuario_nom}</span>
+          <span className="meta-item">Usuari: {user_nom}</span>
         </div>
         <Link to={`/app2/${id}`} className="meta-button">Pagina del producte</Link>
       </div>
