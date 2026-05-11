@@ -28,7 +28,7 @@ const objectPage = ({ resource, comment, id }) => {
   const idObj = Number(id);
 
   useEffect(() => {
-    if (!idObj) {
+    if (!idObj || idObj == "") {
       navigate("/", { replace: true });
     }
   }, [idObj, navigate]);
@@ -64,11 +64,9 @@ const objectPage = ({ resource, comment, id }) => {
     navigate(`/app2/${idObj}`);
   };
   if (!idObj) return null;
+  console.log("recurso: " + recurso);
 
-  if (!resource) return <p>Carregant...</p>;
-
-  if (recurso.id !== idObj) return <p>Carregant...</p>;
-  console.log(recurso);
+  if (!resource || (recurso.id !== idObj)) return <p> Objecte not found </p>; // AQUI ES LO QUE SE EJECUTA CUANDO SE PONE UNO QUE NO EXISTE
   
   return (
     <article className="main">

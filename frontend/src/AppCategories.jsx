@@ -29,6 +29,18 @@ export default function App() {
     }
     cargarTodo();
   });
+  function RevisionCat() {
+    let mensaje = "";
+    if(categoria == undefined) {
+      mensaje = "Categoria inexistent...";
+    } else if(lista.length == 0){
+      mensaje = "No hi han objectes...";
+    }
+
+    return (
+      <p>{mensaje}</p>
+    )
+  }
   return (
     <main
       style={{
@@ -45,6 +57,7 @@ export default function App() {
       {lista.map((recurso) => (
         <CardObject key={recurso.id} resource={recurso} />
       ))}
+      <RevisionCat/>
     </main>
   );
 }

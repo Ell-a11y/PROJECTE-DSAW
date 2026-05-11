@@ -14,8 +14,10 @@ function App() {
           <Route element={<MenuNav/>}>
             <Route path="/" element={<App1 />} />
             <Route path="/app2/:id" element={<App2 />} />
+            <Route path="/app2/" element={<App2 />} />
             <Route path="/usuari" element={<Usuario />} />
             <Route path="/categoria/:categoria" element={<AppCategories />} />
+            <Route path="/categoria/" element={<AppCategories />} />
           </Route>
         </Routes>
       </BrowserRouter>
