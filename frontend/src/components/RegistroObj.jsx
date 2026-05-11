@@ -1,15 +1,17 @@
 // Importacions necesaries
 import { useState } from "react";
 import "./RegistroObj.css";
-import { comentariosGen } from "./ObjectPage";
-import "./../communicationsManager"
+import { createOneComment } from "./../communicationsManager";
+import { useAuth } from "../AuthContext";
+import { useParams } from "react-router-dom";
 
-const params = new URLSearchParams(window.location.search);
-const idObj = Number(params.get("id"));
-export default function App() {
+export default function Registro({ onCommentAdded }) {
+  const {id} = useParams();
   // Estado para saber si el modal está abierto o cerrado
   const [open, setOpen] = useState(false);
   const [nuevoComentario, setNuevoComentario] = useState("");
+  const {user} = useAuth();
+  const idObj = Number(id);
   return (
 <>
     <button className="afellir-comment" onClick={() => setOpen(true)}>
@@ -33,15 +35,22 @@ export default function App() {
         <form className="modal-content">
             <label id="form_coment_label"> Comentari: </label>
             <textarea value={nuevoComentario} onChange={(e) => setNuevoComentario(e.target.value)} placeholder="Escriu el teu comentari..." className="comentari-textarea"/>
-            <button type="button" onClick={() => (setOpen(false), function() {
-                alert('Comentari: ' + nuevoComentario);
-                const Objeto = {
-                    "comentari": nuevoComentario,
-                    "user": 7,
-                    "objecte": idObj
+            <button
+              type="button"
+              onClick={async () => {
+                const newComment = {
+                  comentari: nuevoComentario,
+                  user: user?.id,
+                  objecte: idObj,
                 };
-                commentsByObject(Objeto);
-                })}> Enviar comentari </button>
+                await createOneComment(newComment);
+                setNuevoComentario("");
+                setOpen(false);
+                if (onCommentAdded) await onCommentAdded();
+              }}
+            >
+              Enviar comentari
+            </button>
         </form>
     </div>
 </div>
