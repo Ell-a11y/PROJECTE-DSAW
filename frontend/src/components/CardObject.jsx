@@ -28,6 +28,9 @@ const CardObject = ({ resource: recurso }) => {
     await deleteOneObject(id);
     setVisible(false);
   }
+  function editar() {
+    
+  }
 
   return (
     <article className="card-component">
@@ -61,7 +64,7 @@ const CardObject = ({ resource: recurso }) => {
       {isUserPage && (
         <>
           <button onClick={borrar}>Eliminar</button>
-          <button>Editar...</button>
+          <button><Link to={`/usuari/edit/${id}`}>Editar...</Link></button>
         </>
       )}
     </article>

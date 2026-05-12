@@ -11,9 +11,6 @@ export default function App() {
         }
         InfoUser();
     }, []);
-    useEffect(() => {
-        console.log("PERSONA ACTUALIZADA:", persona);
-    }, [persona]);
     return (<>
         <section>
             <h2>Nom: {persona.nom} {persona.cognom} </h2>

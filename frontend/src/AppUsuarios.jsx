@@ -9,22 +9,16 @@ export default function App() {
         async function cargarDatos() {
             const objects = await objectsList();
             const user = await getUser();
-            console.log(objects)
             const filtrados = [];
             for(const obj of objects){
                 if(obj.users == user.id) {
-                    console.log("OBJETO PERSONA")
                     filtrados.push(obj)
                 }
             }
             setLista(filtrados);
-            console.log("FILTRADOS: " + lista)
         }
         cargarDatos();
     }, []);
-    useEffect(() => {
-        console.log("LISTA ACTUALIZADA:", lista);
-    }, [lista]);
     return (
         <>
             <UserInfo />
