@@ -5,6 +5,19 @@ import { useEffect, useState } from "react";
 import { createTransaction, updateOneObject } from "../communicationsManager";
 import { useAuth } from "../AuthContext";
 
+function formatCommentDate(isoString) {
+  if (!isoString) return "";
+  const d = new Date(isoString);
+  if (Number.isNaN(d.getTime())) return isoString;
+  return d.toLocaleString("ca-ES", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export function comentariosGen(array, idObj) {
   return (
     <>
@@ -12,14 +25,14 @@ export function comentariosGen(array, idObj) {
       <article key={comentario.id} className="comentari-item">
         <span>{comentario.comentari}</span>
         <br />
-        <span>Fecha: {comentario.data.split("T")[0]} - Usuari: {comentario.user_nom}</span>
+        <span>Data: {formatCommentDate(comentario.data)} - Usuari: {comentario.user_nom}</span>
       </article>
     ))}
     </>
   );
 }
 
-const objectPage = ({ resource, comment, id }) => {
+const objectPage = ({ resource, comment, id, onCommentAdded }) => {
   const navigate = useNavigate();
   const { status, user } = useAuth();
   const [endDate, setEndDate] = useState("");
@@ -66,8 +79,15 @@ const objectPage = ({ resource, comment, id }) => {
   if (!idObj) return null;
   console.log("recurso: " + recurso);
 
-  if (!resource || (recurso.id !== idObj)) return <p> Objecte not found </p>; // AQUI ES LO QUE SE EJECUTA CUANDO SE PONE UNO QUE NO EXISTE
-  
+  if (!resource) return <p>Carregant...</p>;
+
+  if (recurso.id !== idObj)
+    return (
+      <div>
+        <p>Carregant...</p>
+        <button onClick={() => navigate(`/`)}>Tornar a la pàgina principal</button>
+      </div>
+    );
   return (
     <article className="main">
       <h1 className="titol-section"> {recurso.nom} </h1>
@@ -92,7 +112,7 @@ const objectPage = ({ resource, comment, id }) => {
           <span className="obj-item">Usuari: {recurso.user_nom}</span>
         </article>
       </article>
-      {(recurso.estat === "per_prestat" || recurso.estat === "donatiu") && <button
+      {(recurso.users != user?.id && (recurso.estat === "per_prestat" || recurso.estat === "donatiu")) && <button
         onClick={() => {
           if (status === "checking") {
             return;
@@ -148,7 +168,7 @@ const objectPage = ({ resource, comment, id }) => {
       <section id="contenidor-comentaris">
         <article>
           <h1 className="titol-section title-comment"> Comentaris </h1>
-          <Registro></Registro>
+          <Registro onCommentAdded={onCommentAdded} />
         </article>
         {comentariosGen(comment, idObj)}
       </section>
