@@ -63,7 +63,6 @@ const objectPage = ({ resource, comment, id, onCommentAdded }) => {
       alert("Selecciona una fecha de fin para el préstamo.");
       return;
     }
-
     const donador = recurso.users;
     const receptor = user?.id;
     const objecte = recurso.id;
@@ -74,8 +73,9 @@ const objectPage = ({ resource, comment, id, onCommentAdded }) => {
     await createTransaction(transaction);
     await updateOneObject({...recurso, estat: temporal ? 'ja_prestat' : 'ja_donat' });
     setShowConfirmModal(false);
-    navigate(`/app2/${idObj}`);
+    navigate(0);
   };
+
   if (!idObj) return null;
   console.log("recurso: " + recurso);
 
