@@ -5,7 +5,7 @@
 }
 
 .afellir-comment {
-    color: black;
+    color: rgb(0, 0, 0);
     font-size: 120%;
     width: 25%;
     height: 50%;
@@ -19,7 +19,7 @@
     display: flex;
     justify-content: space-evenly;
     height: 10%;
-    background-color: rgb(57, 57, 57);
+    background-color: rgb(166, 197, 255);
 }
 .modal-backdrop {
   position: fixed;
@@ -31,7 +31,7 @@
 
 .modal {
   background: white;
-  width: 40%;
+  width: 60%;
 }
 .modal-content{
     padding: 25%;
@@ -84,4 +84,26 @@ input:focus {
 .password-toggle:focus-visible {
   outline: 2px solid #333;
   outline-offset: 2px;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem;
+}
+
+.form-row label {
+    width: 100px;
+    font-weight: bold;
+}
+
+.form-row input,
+.form-row .password-field {
+    flex: 1;
+}
+
+button{
+  margin-right:0.5rem;
+  margin-bottom: 0.5rem;
 }
