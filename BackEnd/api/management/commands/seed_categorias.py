@@ -17,6 +17,7 @@ class Command(BaseCommand):
     help = "Crea categories per defecte si encara no n'hi ha amb aquest nom."
 
     def add_arguments(self, parser):
+        """Añade la opción --quiet para reducir la salida por consola."""
         parser.add_argument(
             "--quiet",
             action="store_true",
@@ -24,6 +25,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        """Inserta categorías por defecte con get_or_create e informa cuántas eran nuevas."""
         quiet = options["quiet"]
         created_count = 0
         existed_count = 0

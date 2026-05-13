@@ -5,7 +5,7 @@ import sys
 
 
 def main():
-    """Run administrative tasks."""
+    """Punto de entrada: arranca Django y ejecuta la orden recibida por línea de comandos."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'proyect.settings')
     try:
         from django.core.management import execute_from_command_line
