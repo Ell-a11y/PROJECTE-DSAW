@@ -4,6 +4,7 @@ import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { getCategories, getDistricts, createOneObject, getUser, updateOneObject, objectsList} from "../communicationsManager";
 
 export default function AddObject() {
+    // Declaracions de variables per el registre d'un objecte
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [image, setImage] = useState(null);
@@ -13,10 +14,12 @@ export default function AddObject() {
     const [status, setStatus] = useState("per_prestat");
     const [district, setDistrict] = useState("");
     const [districts, setDistricts] = useState([]);
+    // Agafem el ID de parametres si existeix
     let { id } = useParams(); 
+    // Saquem la root del navegador
     const navigate = useNavigate();
 
-    useEffect(() => {
+    useEffect(() => { // Hacemos que se cargen las categorias y los distritos y los cargamos
         const fetchCategories = async () => {
             const categories = await getCategories();
             setCategories(categories);
@@ -29,9 +32,9 @@ export default function AddObject() {
         };
         fetchCategories();
         fetchDistricts();
-    }, []);
+    }, []); // Fem que solament es executi una vegada
 
-    const handleImageChange = (e) => {
+    const handleImageChange = (e) => { // Funcion de guardador de imagen, solo el nombre
         const file = e.target.files?.[0];
         if (!file) return;
         if (!file.type.startsWith("image/")) {
@@ -43,7 +46,7 @@ export default function AddObject() {
         setImage(file.name);
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => { // Crea el usuario en base la plantilla de Payload
         e.preventDefault();
         const user = await getUser();
         let payload = {
@@ -56,12 +59,12 @@ export default function AddObject() {
             districte: district,
             users: user.id
         };
-        const isEditPage = location.pathname.includes("/edit");
-        if(isEditPage) {
+        const isEditPage = location.pathname.includes("/edit"); // Vemos si pertenece al apartado de editar
+        if(isEditPage) { // En el caso que si sea editando un objeto lo actualizara y mandara a la pagina del mismo
             payload.id = id;
             await updateOneObject(payload);
             navigate(`/app2/${id}`);
-        } else {
+        } else { // En caso contrario seria la creacion del mismo, y lo cogeremos para poder mandarlo a la pagina del mismo
             await createOneObject(payload);
             const objectes = await objectsList();
             let filtrados = [];
@@ -74,7 +77,6 @@ export default function AddObject() {
             navigate(`/app2/${ultimo.id}`);
         }
     };
-
     return (
         <form className="add-object-form" onSubmit={handleSubmit}>
             <h1>Añadir objeto</h1>

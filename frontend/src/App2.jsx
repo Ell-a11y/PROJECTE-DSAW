@@ -5,20 +5,20 @@ import { getOneObject, commentsByObject } from "./communicationsManager";
 import "./App2.css";
 
 function App() {
-  const { id } = useParams();
+  const { id } = useParams(); // Agafem el id dels parametres
   const [object, setObject] = useState(null);
   const [comments, setComments] = useState([]);
   useEffect(() => {
-    const fetchObject = async () => {
+    const fetchObject = async () => { // se afagan els comentaris i l'objecte
       const object = await getOneObject(id);
       const comments = await commentsByObject(id);
       setComments(comments);
       setObject(object);
     };
     fetchObject();    
-  }, [id]);
+  }, [id]); // Es actualiza quan el ID cambia
 
-  const refreshComments = async () => {
+  const refreshComments = async () => { // Se cogen los comentarios del objeto
     const next = await commentsByObject(id);
     setComments(next);
   };
@@ -31,7 +31,7 @@ function App() {
         comment={comments}
         id={id}
         onCommentAdded={refreshComments}
-      />
+      /> {/* Es executa la funcio de añadir els objectes*/}
     </main>
   );
 }

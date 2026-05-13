@@ -4,6 +4,7 @@ import { login, register, getUser } from "./../communicationsManager";
 import { useAuth } from "../AuthContext";
 import "./Login - Register.css";
 
+// Funcio que ens permet mostrar contrasenya
 function IconEye() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -13,6 +14,7 @@ function IconEye() {
   );
 }
 
+// Funcio que ens permet ocultar la contrasenya
 function IconEyeOff() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -22,6 +24,7 @@ function IconEyeOff() {
   );
 }
 
+// Creacio del input de contrasenya
 function PasswordInput({ id, value, onChange, autoComplete }) {
   const [visible, setVisible] = useState(false);
   return (
@@ -51,16 +54,19 @@ export default function App() {
     const { status, refreshSession, logout } = useAuth();
     // Estado para saber si el modal está abierto o cerrado
     const [open, setOpen] = useState(false); // Si se abre o se cierra
-    const [mode, setMode] = useState("registro");
+    const [mode, setMode] = useState("registro"); // El modo por defecto sera registro
 
-    useEffect(() => {
+    useEffect(() => { // cambia el estado en base la peticion de la autorizacion
         if (status === "authenticated") {
             setMode("usuario");
         } else if (status === "unauthenticated") {
             setMode("registro");
         }
     }, [status]);
+    // Se ejecuta cuando status cambie, osea cada que se haga la peticion de useAuth y esta varie el resultado
+
     const Login = () => {
+        // Declaracion de las variables con SET
         const [email, setEmail] = useState("");
         const [passwd, setPasswd] = useState("");
         const [error, setError] = useState("");
@@ -73,10 +79,10 @@ export default function App() {
                 setError("");
                 setOpen(false);
                 await refreshSession();
-                setMode("usuario")
+                setMode("usuario"); // Se pone en modo usuario que significa que esta registrado
             }
         }
-
+        // Retornem el Login complet
         return (
             <>
                 <label>Coloca el teu email:</label>
@@ -89,98 +95,104 @@ export default function App() {
                   autoComplete="current-password"
                 />
                 <button type="button" onClick={handleLogin}> Login </button>
-                {error && <p style={{ color: "red" }}>{error}</p>}
+                {error && <p style={{ color: "red" }}>{error}</p>} // Si hi han errors els posan aqui
             </>
         );
     };
     const Registro = () => {
+        // Declaracio de variables amb SET's
         const [nom, setNom] = useState("");
         const [cognom, setCognom] = useState("");
         const [telefon, setTelefon] = useState("");
         const [email, setEmail] = useState("");
         const [passwd, setPasswd] = useState("");
         const [error, setError] = useState("");
+        // Funcio de registre, que es autologuea una vegada es crea el compte
         async function handleRegistro() {
-        await register({email, password: passwd, nom, cognom, telefon});
-        const respuesta = await login({ email, password: passwd });
-        if (!respuesta.token) {
-            setError("Error al iniciar sesión después del registro");
-        } else {
-            setError("");
-            setOpen(false); // cerrar modal
-            await refreshSession();
-            setMode("usuario");
+            await register({email, password: passwd, nom, cognom, telefon});
+            const respuesta = await login({ email, password: passwd }); // autolog
+            if (!respuesta.token) {
+                setError("Error al iniciar sesión después del registro");
+            } else {
+                setError("");
+                setOpen(false); // cerrar modal
+                await refreshSession();
+                setMode("usuario");
+            }
         }
-    }
-    const verificarTelefono = (e) => {
-        const telefono = e.target.value;
-        const regex = /^[6-9]\d{8}$/;
-        const correcto = regex.test(telefono);
-        if (!correcto) {
-            setError("El teléfono debe tener 9 dígitos y empezar por 6, 7, 8 o 9");
-        } else {
-            setError("");
+            // Verificacio de telefon
+        const verificarTelefono = (e) => {
+            const telefono = e.target.value;
+            const regex = /^[6-9]\d{8}$/;
+            const correcto = regex.test(telefono);
+            if (!correcto) {
+                setError("El teléfono debe tener 9 dígitos y empezar por 6, 7, 8 o 9");
+            } else {
+                setError("");
+            }
+            setTelefon(telefono);
         }
-        setTelefon(telefono);
-
-    }
-     const verificarEmail = (e) => {
-        const email = e.target.value;
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const correcto = regex.test(email);
-        if (!correcto) {
-            setError("El email no es válido");
-        } else {
-            setError("");
+            // Verificacio de Email
+        const verificarEmail = (e) => {
+            const email = e.target.value;
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const correcto = regex.test(email);
+            if (!correcto) {
+                setError("El email no es válido");
+            } else {
+                setError("");
+            }
+            setEmail(email);
         }
-        setEmail(email);
-    }
-    const verificarAlphabeticos = (e, funcion) => {
-        const texto = e.target.value;
-        const regex = /^[a-zA-Z]+$/;
-        const correcto = regex.test(texto);
-        if (!correcto) {
-            setError("El texto no es válido");
-        } else {
-            setError("");
+            // Verificacio de nom i cognom
+        const verificarAlphabeticos = (e, funcion) => {
+            const texto = e.target.value;
+            const regex = /^[a-zA-Z]+$/;
+            const correcto = regex.test(texto);
+            if (!correcto) {
+                setError("El texto no es válido");
+            } else {
+                setError("");
+            }
+            funcion(texto);
         }
-        funcion(texto);
-    }
-    const verificarPassword = (e) => {
-        const password = e.target.value;
-        const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-        const correcto = regex.test(password);
-        if (!correcto) {
-            setError("La contraseña debe tener minimo 8 caracteres, al menos 1 mayuscula, 1 digito y 1 caracter especial.");
-        } else {
-            setError("");
+            // Verificacio de password segura
+        const verificarPassword = (e) => {
+            const password = e.target.value;
+            const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+            const correcto = regex.test(password);
+            if (!correcto) {
+                setError("La contraseña debe tener minimo 8 caracteres, al menos 1 mayuscula, 1 digito y 1 caracter especial.");
+            } else {
+                setError("");
+            }
+            setPasswd(password);
         }
-        setPasswd(password);
-    }
-    return (
-        <>
-            <label>Nom:</label>
-            <input value={nom} onChange={(e) => verificarAlphabeticos(e, setNom)} placeholder="Nom usuari"/>
-            <label>Cognom:</label>
-            <input value={cognom} onChange={(e) => verificarAlphabeticos(e, setCognom)} placeholder="Cognom usuari"/>
-            <label>Email:</label>
-            <input value={email} onChange={(e) => verificarEmail(e)} placeholder="Email Usuari"/>
-            <label>Telefon:</label>
-            <input value={telefon} onChange={(e) => verificarTelefono(e)} placeholder="Telefon del usuari"/>
-            <label htmlFor="registro-password">Contrasenya:</label>
-            <PasswordInput
-              id="registro-password"
-              value={passwd}
-              onChange={(e) => verificarPassword(e)}
-              autoComplete="new-password"
-              placeholder="Contrasenya"
-            />
-            <button type="button" onClick={handleRegistro}> Registrar </button>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-        </>
-    );
+            // Retorna el formulari de registre
+        return (
+            <>
+                <label>Nom:</label>
+                <input value={nom} onChange={(e) => verificarAlphabeticos(e, setNom)} placeholder="Nom usuari"/>
+                <label>Cognom:</label>
+                <input value={cognom} onChange={(e) => verificarAlphabeticos(e, setCognom)} placeholder="Cognom usuari"/>
+                <label>Email:</label>
+                <input value={email} onChange={(e) => verificarEmail(e)} placeholder="Email Usuari"/>
+                <label>Telefon:</label>
+                <input value={telefon} onChange={(e) => verificarTelefono(e)} placeholder="Telefon del usuari"/>
+                <label htmlFor="registro-password">Contrasenya:</label>
+                <PasswordInput
+                id="registro-password"
+                value={passwd}
+                onChange={(e) => verificarPassword(e)}
+                autoComplete="new-password"
+                placeholder="Contrasenya"
+                />
+                <button type="button" onClick={handleRegistro}> Registrar </button>
+                {error && <p style={{ color: "red" }}>{error}</p>}
+            </>
+        );
     };
-return (
+    return (
 <>
     {mode != "usuario" ? (
         <button className="afellir-comment" onClick={() => setOpen(true)}>
@@ -203,7 +215,7 @@ return (
             Usuari
         </button>
     )}
-    {open && (
+    {open && ( // Open decide si abre o no el modal, vamos si es Usuario no
         <div className="modal-backdrop" onClick={() => setOpen(false)}>
             <div className="modal" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
@@ -212,8 +224,8 @@ return (
                 </div>
                 <button onClick={() => setMode("login")}> Login </button>
                 <button onClick={() => setMode("registro")}> Registre </button>
-                {mode === "login" && <Login />}
-                {mode === "registro" && <Registro />}
+                {mode === "login" && <Login />} {/* Decision de si mandar login o registro */}
+                {mode === "registro" && <Registro />} {/* Decision de si mandar login o registro */}
             </div>
         </div>
     )}

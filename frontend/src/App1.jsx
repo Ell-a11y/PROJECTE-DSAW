@@ -4,7 +4,7 @@ import { objectsList } from "./communicationsManager";
 
 export default function App() {
   const [lista, setLista] = useState([]);
-  useEffect(() => {
+  useEffect(() => { // Cargara una funcion que cargara toda la lista de objetos para ponerlos en una lista aparte con los atributos correspondientes
     async function cargarTodo() {
       const objetos = await objectsList();
       const normalizados = objetos.map((obj) => ({
@@ -21,7 +21,7 @@ export default function App() {
       setLista(normalizados);
     }
     cargarTodo();
-  }, []);
+  }, []); // Cargara solo al principio
   return (
     <main
       style={{
@@ -35,7 +35,7 @@ export default function App() {
         background: "#b2d1ff",
       }}
     >
-      {lista.map((recurso) => (
+      {lista.map((recurso) => ( // Cargara la lista de los objetos
         <CardObject key={recurso.id} resource={recurso} />
       ))}
     </main>

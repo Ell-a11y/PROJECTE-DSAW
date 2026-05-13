@@ -12,7 +12,8 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route element={<MenuNav/>}>
+          {/* Cogera por defecto siempre MenuNav como contenedor principal de todo */}
+          <Route element={<MenuNav/>}> 
             <Route path="/" element={<App1 />} />
             <Route path="/app2/:id" element={<App2 />} />
             <Route path="/app2/" element={<App2 />} />
