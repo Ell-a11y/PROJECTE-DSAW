@@ -73,7 +73,7 @@ const objectPage = ({ resource, comment, id, onCommentAdded }) => {
     await createTransaction(transaction);
     await updateOneObject({...recurso, estat: temporal ? 'ja_prestat' : 'ja_donat' });
     setShowConfirmModal(false);
-    navigate(0);
+    navigate(0); // Recarga la pagina del objeto
   };
 
   if (!idObj) return null;

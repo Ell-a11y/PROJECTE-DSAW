@@ -32,6 +32,7 @@ function PasswordInput({ id, value, onChange, autoComplete }) {
         value={value}
         onChange={onChange}
         autoComplete={autoComplete}
+        placeholder="Contrasenya"
       />
       <button
         type="button"
@@ -159,19 +160,20 @@ export default function App() {
     return (
         <>
             <label>Nom:</label>
-            <input value={nom} onChange={(e) => verificarAlphabeticos(e, setNom)} />
+            <input value={nom} onChange={(e) => verificarAlphabeticos(e, setNom)} placeholder="Nom usuari"/>
             <label>Cognom:</label>
-            <input value={cognom} onChange={(e) => verificarAlphabeticos(e, setCognom)} />    
+            <input value={cognom} onChange={(e) => verificarAlphabeticos(e, setCognom)} placeholder="Cognom usuari"/>
             <label>Email:</label>
-            <input value={email} onChange={(e) => verificarEmail(e)} />
+            <input value={email} onChange={(e) => verificarEmail(e)} placeholder="Email Usuari"/>
             <label>Telefon:</label>
-            <input value={telefon} onChange={(e) => verificarTelefono(e)} />
+            <input value={telefon} onChange={(e) => verificarTelefono(e)} placeholder="Telefon del usuari"/>
             <label htmlFor="registro-password">Contrasenya:</label>
             <PasswordInput
               id="registro-password"
               value={passwd}
               onChange={(e) => verificarPassword(e)}
               autoComplete="new-password"
+              placeholder="Contrasenya"
             />
             <button type="button" onClick={handleRegistro}> Registrar </button>
             {error && <p style={{ color: "red" }}>{error}</p>}

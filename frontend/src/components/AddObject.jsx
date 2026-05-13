@@ -78,9 +78,9 @@ export default function AddObject() {
     return (
         <form className="add-object-form" onSubmit={handleSubmit}>
             <h1>Añadir objeto</h1>
-            <input className="add-object-form-input" type="text" placeholder="Name"
+            <input className="add-object-form-input" type="text" placeholder="Nom del objecte"
                 value={name} onChange={(e) => setName(e.target.value)} />
-            <input className="add-object-form-input" type="text" placeholder="Description"
+            <input className="add-object-form-input" type="text" placeholder="Descripcio del objecte"
                 value={description} onChange={(e) => setDescription(e.target.value)} />
             <input className="add-object-form-input" type="file" accept="image/*"
                 onChange={handleImageChange} />
