@@ -80,13 +80,14 @@ const objectPage = ({ resource, comment, id, onCommentAdded }) => {
 
   if (!resource) return <p>Carregant...</p>;
 
-  if (recurso.id !== idObj) {/* Si el objecte no coincideix no carregara */}
+  if (recurso.id !== idObj)
     return (
       <div>
         <p>Carregant...</p>
         <button onClick={() => navigate(`/`)}>Tornar a la pàgina principal</button>
       </div>
     );
+    /* Si el objecte no coincideix no carregara */
   return (
     <article className="main">
       <h1 className="titol-section"> {recurso.nom} </h1>
