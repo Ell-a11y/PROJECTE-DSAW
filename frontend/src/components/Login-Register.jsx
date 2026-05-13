@@ -95,7 +95,7 @@ export default function App() {
                   autoComplete="current-password"
                 />
                 <button type="button" onClick={handleLogin}> Login </button>
-                {error && <p style={{ color: "red" }}>{error}</p>} // Si hi han errors els posan aqui
+                {error && <p style={{ color: "red" }}>{error}</p>} {/* Si hi han errors els posan aqui*/}
             </>
         );
     };
