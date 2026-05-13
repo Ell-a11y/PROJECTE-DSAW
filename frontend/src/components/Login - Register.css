@@ -38,13 +38,14 @@
 }
 
 input {
-  color: #000000 !important;
-  background-color: #ffffff;
+  color: black;
+  background-color: white;
 }
 
 input:focus {
   border-color: #333;
-  background: rgb(0, 0, 0);
+  background: black;
+  color: white;
 }
 
 .password-field {
