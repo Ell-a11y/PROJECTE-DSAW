@@ -2,4 +2,5 @@ nav {
     display: flex;
     justify-content: space-around;
     margin-bottom: 4%;
+    background-color: rgb(0, 255, 229);
 }
