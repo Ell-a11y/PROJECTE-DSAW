@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./AddObject.css";
+import "./../CSS/AddObject.css";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { getCategories, getDistricts, createOneObject, getUser, updateOneObject, objectsList} from "../communicationsManager";
 

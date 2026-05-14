@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { login, register, getUser } from "./../communicationsManager";
 import { useAuth } from "../AuthContext";
-import "./Login - Register.css";
+import "./../CSS/Login - Register.css";
 
 // Funcio que ens permet mostrar contrasenya
 function IconEye() {
@@ -208,12 +208,12 @@ export default function App() {
     return (
 <>
     {mode != "usuario" ? (
-        <button className="afellir-comment" onClick={() => setOpen(true)}>
+        <button className="boton-login" onClick={() => setOpen(true)}>
             Login / Registre
         </button>
     ) : (
         <button
-            className="afellir-comment"
+            className="boton-login"
             type="button"
             onClick={async () => {
                 const data = await getUser();

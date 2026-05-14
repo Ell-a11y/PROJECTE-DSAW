@@ -1,4 +1,4 @@
-import "./CardObject.css";
+import "./../CSS/CardObject.css";
 import { useLocation, Link } from "react-router-dom";
 import { deleteOneObject } from "./../communicationsManager";
 import { useState } from "react";

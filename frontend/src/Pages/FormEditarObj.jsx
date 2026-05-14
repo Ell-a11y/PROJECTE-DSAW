@@ -1,5 +1,5 @@
-import {useAuth} from "./AuthContext"
-import AddObject from "./components/AddObject";
+import {useAuth} from "../AuthContext"
+import AddObject from "../components/AddObject";
 
 export default function formulariEdit() {
     const log = useAuth(); // Mira si el usuario esta logueado

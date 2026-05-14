@@ -1,4 +1,4 @@
-import "./ObjectPage.css";
+import "./../CSS/ObjectPage.css";
 import Registro from "./RegistroObj";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";

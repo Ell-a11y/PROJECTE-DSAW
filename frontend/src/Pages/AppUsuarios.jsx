@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import UserInfo from "./components/Usuari";
-import CardObject from "./components/CardObject";
-import { objectsList, getUser } from "./communicationsManager";
-import AddObject from "./components/AddObject";
+import UserInfo from "../components/Usuari";
+import CardObject from "../components/CardObject";
+import { objectsList, getUser } from "../communicationsManager";
+import AddObject from "../components/AddObject";
 export default function App() {
     const [lista, setLista] = useState([]);
     useEffect(() => { // Fa que la funcio carregui els objectes que son del usuari que ha entrat

@@ -1,10 +1,13 @@
+import { useParams } from "react-router-dom";
+import CardObject from "../components/CardObject";
 import { useEffect, useState } from "react";
-import CardObject from "./components/CardObject";
-import { objectsList } from "./communicationsManager";
+import { objectsList } from "../communicationsManager";
+
 
 export default function App() {
   const [lista, setLista] = useState([]);
-  useEffect(() => { // Cargara una funcion que cargara toda la lista de objetos para ponerlos en una lista aparte con los atributos correspondientes
+  const { categoria } = useParams();
+  useEffect(() => {
     async function cargarTodo() {
       const objetos = await objectsList();
       const normalizados = objetos.map((obj) => ({
@@ -18,10 +21,26 @@ export default function App() {
         estat: obj.estat,
         districte: obj.districte,
       }));
-      setLista(normalizados);
+        const lista = [];
+        for(const x in normalizados) {
+            if(categoria == normalizados[x].categoria_nom) lista.push(normalizados[x]);
+        }
+        setLista(lista)
     }
     cargarTodo();
-  }, []); // Cargara solo al principio
+  });
+  function RevisionCat() {
+    let mensaje = "";
+    if(categoria == undefined) {
+      mensaje = "Categoria inexistent...";
+    } else if(lista.length == 0){
+      mensaje = "No hi han objectes...";
+    }
+
+    return (
+      <p>{mensaje}</p>
+    )
+  }
   return (
     <main
       style={{
@@ -35,9 +54,10 @@ export default function App() {
         background: "#b2d1ff",
       }}
     >
-      {lista.map((recurso) => ( // Cargara la lista de los objetos
+      {lista.map((recurso) => (
         <CardObject key={recurso.id} resource={recurso} />
       ))}
+      <RevisionCat/>
     </main>
   );
 }

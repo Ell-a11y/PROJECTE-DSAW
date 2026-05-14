@@ -1,8 +1,8 @@
-import ObjectPage from "./components/ObjectPage";
+import ObjectPage from "../components/ObjectPage";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getOneObject, commentsByObject } from "./communicationsManager";
-import "./App2.css";
+import { getOneObject, commentsByObject } from "../communicationsManager";
+import "../CSS/App2.css";
 
 function App() {
   const { id } = useParams(); // Agafem el id dels parametres

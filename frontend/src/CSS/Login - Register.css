@@ -4,7 +4,7 @@
   background: rgba(0, 0, 0, 0.6);
 }
 
-.afellir-comment {
+.boton-login {
     color: rgb(0, 0, 0);
     font-size: 120%;
     width: 25%;
@@ -44,8 +44,8 @@ input {
 
 input:focus {
   border-color: #333;
-  background: black;
-  color: white;
+  color: black;
+  background-color: white;
 }
 
 .password-field {
