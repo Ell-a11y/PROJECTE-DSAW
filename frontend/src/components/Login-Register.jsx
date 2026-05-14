@@ -85,15 +85,18 @@ export default function App() {
         // Retornem el Login complet
         return (
             <>
+                <div className="form-row">
                 <label>Coloca el teu email:</label>
                 <input type="email" placeholder="exemple@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)}/>
+                </div>
+                <div className="form-row">
                 <label htmlFor="login-password">Posar la teva password</label>
                 <PasswordInput
                   id="login-password"
                   value={passwd}
                   onChange={(e) => setPasswd(e.target.value)}
                   autoComplete="current-password"
-                />
+                /></div>
                 <button type="button" onClick={handleLogin}> Login </button>
                 {error && <p style={{ color: "red" }}>{error}</p>} {/* Si hi han errors els posan aqui*/}
             </>
@@ -171,22 +174,32 @@ export default function App() {
             // Retorna el formulari de registre
         return (
             <>
-                <label>Nom:</label>
-                <input value={nom} onChange={(e) => verificarAlphabeticos(e, setNom)} placeholder="Nom usuari"/>
-                <label>Cognom:</label>
-                <input value={cognom} onChange={(e) => verificarAlphabeticos(e, setCognom)} placeholder="Cognom usuari"/>
-                <label>Email:</label>
-                <input value={email} onChange={(e) => verificarEmail(e)} placeholder="Email Usuari"/>
-                <label>Telefon:</label>
-                <input value={telefon} onChange={(e) => verificarTelefono(e)} placeholder="Telefon del usuari"/>
-                <label htmlFor="registro-password">Contrasenya:</label>
-                <PasswordInput
-                id="registro-password"
-                value={passwd}
-                onChange={(e) => verificarPassword(e)}
-                autoComplete="new-password"
-                placeholder="Contrasenya"
-                />
+                <div className="form-row">
+                    <label>Nom:</label>
+                    <input value={nom} onChange={(e) => verificarAlphabeticos(e, setNom)} placeholder="Nom usuari"/>
+                </div>
+                <div className="form-row">
+                    <label>Cognom:</label>
+                    <input value={cognom} onChange={(e) => verificarAlphabeticos(e, setCognom)} placeholder="Cognom usuari"/>
+                </div>
+                <div className="form-row">
+                    <label>Email:</label>
+                    <input value={email} onChange={(e) => verificarEmail(e)} placeholder="Email Usuari"/>
+                </div>
+                <div className="form-row">
+                    <label>Telefon:</label>
+                    <input value={telefon} onChange={(e) => verificarTelefono(e)} placeholder="Telefon del usuari"/>
+                </div>
+                <div className="form-row">
+                    <label htmlFor="registro-password">Contrasenya:</label>
+                    <PasswordInput
+                    id="registro-password"
+                    value={passwd}
+                    onChange={(e) => verificarPassword(e)}
+                    autoComplete="new-password"
+                    placeholder="Contrasenya"
+                    />
+                </div>
                 <button type="button" onClick={handleRegistro}> Registrar </button>
                 {error && <p style={{ color: "red" }}>{error}</p>}
             </>
