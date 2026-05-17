@@ -96,7 +96,7 @@ const objectPage = ({ resource, comment, id, onCommentAdded }) => {
           <img
             className="obj-image"
             src={recurso.imatge}
-            alt={recurso.nom}
+            alt={recurso.nom ? `Imatge de l'objecte: ${recurso.nom}` : "Imatge de l'objecte"}
             loading="lazy"
             onError={(event) => {
               event.currentTarget.src =
@@ -125,7 +125,7 @@ const objectPage = ({ resource, comment, id, onCommentAdded }) => {
           }
           setShowConfirmModal(true);
         }}
-        className="solicitar"
+        className="solicitar btn-primary"
       >
         Solicitar objecte
       </button>}
@@ -133,11 +133,11 @@ const objectPage = ({ resource, comment, id, onCommentAdded }) => {
       {showConfirmModal && (
         // L'objecte tindra que tenir una confirmacio del usuari i en cas que sigui positiva es tindra que posar la data de retornacio del
         // producte en cas que sigui de prestam, en cas contrari es anira a la pagina del objecte sense boto perque ja esta prestat
-        <div className="modal-overlay" role="dialog" aria-modal="true">
+        <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
           <div className="modal-content">
-            <h2 className="modal-title">Confirmar transaccio</h2>
+            <h2 id="confirm-modal-title" className="modal-title">Confirmar transacció</h2>
             <p className="modal-text">
-              Estas segur que vols sol-licitar aquest objecte?
+              Estàs segur que vols sol·licitar aquest objecte?
             </p>
 
             {recurso.estat === "per_prestat" && (

@@ -33,7 +33,7 @@ const CardObject = ({ resource: recurso }) => {
       <img
         className="card-image"
         src={imatge}
-        alt={nom}
+        alt={nom ? `Imatge de l'objecte: ${nom}` : "Imatge de l'objecte"}
         loading="lazy"
         onError={(event) => {
           event.currentTarget.src =
@@ -54,14 +54,14 @@ const CardObject = ({ resource: recurso }) => {
         </div>
 
         <Link to={`/app2/${id}`} className="meta-button">
-          Pagina del producte
+          Veure detalls
         </Link>
       </div>
-      {isUserPage && ( // Si la pagina es una pagina de editar apareixeran aquestos botons
-        <>
-          <button onClick={borrar}>Eliminar</button>
-          <button><Link to={`/usuari/edit/${id}`}>Editar...</Link></button>
-        </>
+      {isUserPage && (
+        <div className="card-actions">
+          <button type="button" className="btn-danger" onClick={borrar}>Eliminar</button>
+          <Link to={`/usuari/edit/${id}`} className="btn-secondary">Editar</Link>
+        </div>
       )}
     </article>
   );

@@ -1,20 +1,34 @@
 import { useEffect, useState } from "react";
 import { getUser } from "./../communicationsManager";
 
-// Revisa el Usuari en base el fetch
-export default function App() {
-    const [persona, setPersona] = useState({});
-    useEffect(() => {
-        async function InfoUser() {
-            const data = await getUser();
-            setPersona({nom: data.nom, cognom: data.cognom, email: data.email});
-        }
-        InfoUser(); // Agafa la info del usuari per posarla informacio del usuari
-    }, []);
-    return (<>
-        <section>
-            <h2>Nom: {persona.nom} {persona.cognom} </h2>
-            <h2>Email: {persona.email} </h2>
-        </section>
-    </>)
-};
+export default function Usuari() {
+  const [persona, setPersona] = useState(null);
+
+  useEffect(() => {
+    async function InfoUser() {
+      const data = await getUser();
+      setPersona({ nom: data.nom, cognom: data.cognom, email: data.email });
+    }
+    InfoUser();
+  }, []);
+
+  if (!persona) {
+    return (
+      <section className="user-profile" aria-live="polite">
+        <p className="loading-text">Carregant perfil…</p>
+      </section>
+    );
+  }
+
+  return (
+    <section className="user-profile" aria-labelledby="user-profile-title">
+      <h2 id="user-profile-title" className="user-profile__title">El teu perfil</h2>
+      <p className="user-profile__detail">
+        <strong>Nom:</strong> {persona.nom} {persona.cognom}
+      </p>
+      <p className="user-profile__detail">
+        <strong>Email:</strong> {persona.email}
+      </p>
+    </section>
+  );
+}

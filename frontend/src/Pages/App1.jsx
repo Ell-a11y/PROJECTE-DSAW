@@ -2,42 +2,58 @@ import { useEffect, useState } from "react";
 import CardObject from "../components/CardObject";
 import { objectsList } from "../communicationsManager";
 
-export default function App() {
+export default function App1() {
   const [lista, setLista] = useState([]);
-  useEffect(() => { // Cargara una funcion que cargara toda la lista de objetos para ponerlos en una lista aparte con los atributos correspondientes
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
     async function cargarTodo() {
-      const objetos = await objectsList();
-      const normalizados = objetos.map((obj) => ({
-        id: obj.id,
-        nom: obj.nom,
-        imatge: obj.imatge,
-        user_nom: obj.user_nom ?? "Anonim",
-        categoria_nom: obj.categoria_nom ?? "Sense categoria",
-        descripcio: obj.descipcio ?? obj.descripcio,
-        qualitat: obj.qualitat,
-        estat: obj.estat,
-        districte: obj.districte,
-      }));
-      setLista(normalizados);
+      try {
+        const objetos = await objectsList();
+        const normalizados = objetos.map((obj) => ({
+          id: obj.id,
+          nom: obj.nom,
+          imatge: obj.imatge,
+          user_nom: obj.user_nom ?? "Anònim",
+          categoria_nom: obj.categoria_nom ?? "Sense categoria",
+          descripcio: obj.descipcio ?? obj.descripcio,
+          qualitat: obj.qualitat,
+          estat: obj.estat,
+          districte: obj.districte,
+        }));
+        setLista(normalizados);
+      } finally {
+        setLoading(false);
+      }
     }
     cargarTodo();
-  }, []); // Cargara solo al principio
+  }, []);
+
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        gap: "16px",
-        alignItems: "center",
-        justifyContent: "center",
-        flexWrap: "wrap",
-        padding: "24px",
-        background: "#b2d1ff",
-      }}
-    >
-      {lista.map((recurso) => ( // Cargara la lista de los objetos
-        <CardObject key={recurso.id} resource={recurso} />
-      ))}
+    <main id="main-content" className="page-main">
+      <header className="page-header">
+        <h1>Objectes disponibles a Barcelona</h1>
+        <p>
+          Dona o demana en préstec objectes infrautilitzats i fomenta l&apos;economia
+          del compartir al teu barri.
+        </p>
+      </header>
+
+      {loading ? (
+        <p className="loading-text" role="status" aria-live="polite">
+          Carregant objectes…
+        </p>
+      ) : lista.length === 0 ? (
+        <p className="empty-state" role="status">
+          Encara no hi ha objectes publicats.
+        </p>
+      ) : (
+        <section className="cards-grid" aria-label="Llista d'objectes">
+          {lista.map((recurso) => (
+            <CardObject key={recurso.id} resource={recurso} />
+          ))}
+        </section>
+      )}
     </main>
   );
 }
