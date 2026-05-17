@@ -1,4 +1,4 @@
-import "./CardObject.css";
+import "./../CSS/CardObject.css";
 import { useLocation, Link } from "react-router-dom";
 import { deleteOneObject } from "./../communicationsManager";
 import { useState } from "react";
@@ -9,7 +9,7 @@ const CardObject = ({ resource: recurso }) => {
 
   if (!recurso || !visible) return null;
 
-  const {
+  const { // Creamos la base del objeto, dejando fuera cualquier otro tipo de informacion
     id,
     nom,
     imatge,
@@ -22,17 +22,13 @@ const CardObject = ({ resource: recurso }) => {
   
   } = recurso;
 
-  const isUserPage = location.pathname === "/usuari";
+  const isUserPage = location.pathname === "/usuari"; // Revisa si el PATHNAME es del usuario
 
-  async function borrar() {
+  async function borrar() { // Funcion per eliminar el objecte
     await deleteOneObject(id);
     setVisible(false);
   }
-  function editar() {
-    
-  }
-
-  return (
+  return ( // Creem els cards amb l'informacio dels Objectes
     <article className="card-component">
       <img
         className="card-image"
@@ -61,7 +57,7 @@ const CardObject = ({ resource: recurso }) => {
           Pagina del producte
         </Link>
       </div>
-      {isUserPage && (
+      {isUserPage && ( // Si la pagina es una pagina de editar apareixeran aquestos botons
         <>
           <button onClick={borrar}>Eliminar</button>
           <button><Link to={`/usuari/edit/${id}`}>Editar...</Link></button>

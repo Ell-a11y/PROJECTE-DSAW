@@ -1,9 +1,12 @@
+import { useParams } from "react-router-dom";
+import CardObject from "../components/CardObject";
 import { useEffect, useState } from "react";
-import CardObject from "./components/CardObject";
-import { objectsList } from "./communicationsManager";
+import { objectsList } from "../communicationsManager";
+
 
 export default function App() {
   const [lista, setLista] = useState([]);
+  const { categoria } = useParams();
   useEffect(() => {
     async function cargarTodo() {
       const objetos = await objectsList();
@@ -18,10 +21,26 @@ export default function App() {
         estat: obj.estat,
         districte: obj.districte,
       }));
-      setLista(normalizados);
+        const lista = [];
+        for(const x in normalizados) {
+            if(categoria == normalizados[x].categoria_nom) lista.push(normalizados[x]);
+        }
+        setLista(lista)
     }
     cargarTodo();
-  }, []);
+  });
+  function RevisionCat() {
+    let mensaje = "";
+    if(categoria == undefined) {
+      mensaje = "Categoria inexistent...";
+    } else if(lista.length == 0){
+      mensaje = "No hi han objectes...";
+    }
+
+    return (
+      <p>{mensaje}</p>
+    )
+  }
   return (
     <main
       style={{
@@ -38,6 +57,7 @@ export default function App() {
       {lista.map((recurso) => (
         <CardObject key={recurso.id} resource={recurso} />
       ))}
+      <RevisionCat/>
     </main>
   );
 }

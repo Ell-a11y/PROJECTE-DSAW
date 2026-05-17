@@ -56,4 +56,5 @@ class TokenJWT(models.Model):
     creat_el = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
+        """Texto legible del token para el admin de Django."""
         return f"Token de {self.user.email}"

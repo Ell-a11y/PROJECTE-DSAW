@@ -6,6 +6,7 @@ from .models import TokenJWT
 
 
 def extract_bearer_token(request):
+    """Obtiene el JWT del header Authorization Bearer sin lanzar error si falta o el formato es incorrecto."""
     auth_header = request.META.get("HTTP_AUTHORIZATION", "") or request.headers.get(
         "Authorization", ""
     )
@@ -16,7 +17,7 @@ def extract_bearer_token(request):
 
 
 def extract_bearer_token_or_raise(request):
-    """Authorization: Bearer <jwt> con mensajes claros para /api/me/ y similares."""
+    """Igual que extract_bearer_token pero lanza AuthenticationFailed si falta o el formato no es Bearer."""
     auth_header = request.META.get("HTTP_AUTHORIZATION", "") or request.headers.get(
         "Authorization", ""
     )
@@ -34,10 +35,7 @@ def extract_bearer_token_or_raise(request):
 
 
 def validate_stored_jwt_token(token_string):
-    """
-    Token must exist in DB (sesión/revocación) y el JWT debe ser válido
-    (firma + exp, etc.).
-    """
+    """Comprueba que el token exista en BD y que el JWT decodifique bien (firma y caducidad)."""
     if not token_string:
         return False
     if not TokenJWT.objects.filter(token=token_string).exists():
@@ -52,10 +50,7 @@ def validate_stored_jwt_token(token_string):
 
 
 def validate_stored_jwt_token_or_raise(token_string):
-    """
-    Igual que validate_stored_jwt_token pero con errores HTTP para /api/me/.
-    Devuelve el payload del JWT si es válido.
-    """
+    """Valida el token como validate_stored_jwt_token y devuelve el payload o lanza AuthenticationFailed."""
     if not token_string:
         raise AuthenticationFailed("Token no proporcionado")
     if not TokenJWT.objects.filter(token=token_string).exists():

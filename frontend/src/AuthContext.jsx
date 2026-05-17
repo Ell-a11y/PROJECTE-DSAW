@@ -7,15 +7,15 @@ export function AuthProvider({ children }) {
   const [status, setStatus] = useState("checking");
   const [user, setUser] = useState(null);
 
-  const refreshSession = async () => {
-    const token = localStorage.getItem("token");
+  const refreshSession = async () => { 
+    const token = localStorage.getItem("token"); // Revisa si el token existeix
     if (!token) {
       setUser(null);
       setStatus("unauthenticated");
       return null;
     }
 
-    try {
+    try { // Si existe el usuario con un ID valido sacara como autenticado
       const data = await getUser();
       if (data && data.id) {
         setUser(data);
@@ -34,6 +34,7 @@ export function AuthProvider({ children }) {
     return null;
   };
 
+  // Eliminara el token y pondra de estado que NO esta autenticado
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user_nom");
@@ -50,10 +51,11 @@ export function AuthProvider({ children }) {
     [status, user],
   );
 
+  // Proveemos el contexto
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export function useAuth() {
+export function useAuth() { // nos dara la informacion para ver si esta logueado o no de una manera mas facil
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used inside AuthProvider");

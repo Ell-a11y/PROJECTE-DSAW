@@ -1,6 +1,6 @@
 // Importacions necesaries
 import { useState } from "react";
-import "./RegistroObj.css";
+import "./../CSS/RegistroObj.css";
 import { createOneComment } from "./../communicationsManager";
 import { useAuth } from "../AuthContext";
 import { useParams } from "react-router-dom";

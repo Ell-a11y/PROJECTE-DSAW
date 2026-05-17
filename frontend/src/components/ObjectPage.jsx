@@ -1,11 +1,11 @@
-import "./ObjectPage.css";
+import "./../CSS/ObjectPage.css";
 import Registro from "./RegistroObj";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { createTransaction, updateOneObject } from "../communicationsManager";
 import { useAuth } from "../AuthContext";
 
-function formatCommentDate(isoString) {
+function formatCommentDate(isoString) { // Crea el format de la data
   if (!isoString) return "";
   const d = new Date(isoString);
   if (Number.isNaN(d.getTime())) return isoString;
@@ -18,7 +18,7 @@ function formatCommentDate(isoString) {
   });
 }
 
-export function comentariosGen(array, idObj) {
+export function comentariosGen(array, idObj) { // Funcio de generacio de comentaris
   return (
     <>
     {array.map((comentario) => (
@@ -41,29 +41,28 @@ const objectPage = ({ resource, comment, id, onCommentAdded }) => {
   const idObj = Number(id);
 
   useEffect(() => {
-    if (!idObj || idObj == "") {
+    if (!idObj || idObj == "") { {/* Si el objeto es nulo manda al home */}
       navigate("/", { replace: true });
     }
-  }, [idObj, navigate]);
+  }, [idObj, navigate]); {/* Actualitza cada vegada que es actualiza alguns d'aquestos dos */}
 
   useEffect(() => {
-    if (!resource || resource.id !== idObj) {
+    if (!resource || resource.id !== idObj) { {/* Si el objecte no existeix o no coincideix no retorna nada */}
       return;
     }
-  }, [resource, idObj]);
+  }, [resource, idObj]); {/* Actualitza cada vegada que es actualiza alguns d'aquestos dos */}
   const recurso = resource;
-  const checkEstat=()=>{
+  const checkEstat=()=>{ {/*Revisa el estat*/}
     if (recurso.estat === 'per_prestat') {
       return true;
     }
     return false;
   };
-  const handleCreateTransaction = async () => {
+  const handleCreateTransaction = async () => { {/* Creacio de la transaccio */}
     if (checkEstat() && !endDate) {
       alert("Selecciona una fecha de fin para el préstamo.");
       return;
     }
-
     const donador = recurso.users;
     const receptor = user?.id;
     const objecte = recurso.id;
@@ -74,10 +73,10 @@ const objectPage = ({ resource, comment, id, onCommentAdded }) => {
     await createTransaction(transaction);
     await updateOneObject({...recurso, estat: temporal ? 'ja_prestat' : 'ja_donat' });
     setShowConfirmModal(false);
-    navigate(`/app2/${idObj}`);
+    navigate(0); // Recarga la pagina del objeto
   };
-  if (!idObj) return null;
-  console.log("recurso: " + recurso);
+
+  if (!idObj) return null; 
 
   if (!resource) return <p>Carregant...</p>;
 
@@ -88,6 +87,7 @@ const objectPage = ({ resource, comment, id, onCommentAdded }) => {
         <button onClick={() => navigate(`/`)}>Tornar a la pàgina principal</button>
       </div>
     );
+    /* Si el objecte no coincideix no carregara */
   return (
     <article className="main">
       <h1 className="titol-section"> {recurso.nom} </h1>
@@ -114,6 +114,8 @@ const objectPage = ({ resource, comment, id, onCommentAdded }) => {
       </article>
       {(recurso.users != user?.id && (recurso.estat === "per_prestat" || recurso.estat === "donatiu")) && <button
         onClick={() => {
+          // veu si el objecte es del usuari, o be si ja esta prestat o donat, en algun cas dels comentats no sortida el boto
+          // Pero si no es el cass sortida el buto per pedir l'objecte
           if (status === "checking") {
             return;
           }
@@ -129,6 +131,8 @@ const objectPage = ({ resource, comment, id, onCommentAdded }) => {
       </button>}
 
       {showConfirmModal && (
+        // L'objecte tindra que tenir una confirmacio del usuari i en cas que sigui positiva es tindra que posar la data de retornacio del
+        // producte en cas que sigui de prestam, en cas contrari es anira a la pagina del objecte sense boto perque ja esta prestat
         <div className="modal-overlay" role="dialog" aria-modal="true">
           <div className="modal-content">
             <h2 className="modal-title">Confirmar transaccio</h2>
@@ -152,7 +156,7 @@ const objectPage = ({ resource, comment, id, onCommentAdded }) => {
                 />
               </div>
             )}
-
+            {/* {Gestio del modal} */}
             <div className="modal-actions">
               <button type="button" className="modal-btn cancel" onClick={() => setShowConfirmModal(false)}>
                 Cancel-lar
