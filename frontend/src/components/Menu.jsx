@@ -3,11 +3,11 @@ import { getCategories, getDistricts } from "./../communicationsManager";
 import { Link } from "react-router-dom";
 import "./../CSS/Menu.css";
 
-function App() {
+function Menu() {
   const [categorias, setCategorias] = useState([]);
   const [districtes, setDistrictes] = useState([]);
 
-  useEffect(() => { // Carga las categorias i districtes
+  useEffect(() => {
     async function cargar() {
       const data = await getCategories();
       const dataDis = await getDistricts();
@@ -16,33 +16,31 @@ function App() {
     }
     cargar();
   }, []);
-  
+
   return (
-    <nav>
-      <section>
-        <details>
-          <summary> Categories </summary>
-          {/* Cargaran todas las categorias y se pondran los enlaces corresponientes para cada categoria */}
-          {categorias.map(cat => (
+    <div className="filter-nav" aria-label="Filtres">
+      <details className="filter-menu">
+        <summary className="filter-menu__summary">Categories</summary>
+        <ul className="filter-menu__list" role="list">
+          {categorias.map((cat) => (
             <li key={cat.id}>
               <Link to={`/categoria/${cat.categoria}`}>{cat.categoria}</Link>
             </li>
           ))}
-        </details>
-      </section>
-      <section>
-        <details>
-          <summary> Districtes </summary>
-          {/* Cargaran todos los distritos y se pondran los enlaces corresponientes para cada categoria */}
-          {districtes.map(dis => (
+        </ul>
+      </details>
+      <details className="filter-menu">
+        <summary className="filter-menu__summary">Districtes</summary>
+        <ul className="filter-menu__list" role="list">
+          {districtes.map((dis) => (
             <li key={dis.id}>
               <Link to={`/districte/${dis.name}`}>{dis.name}</Link>
             </li>
           ))}
-        </details>
-      </section>
-    </nav>
+        </ul>
+      </details>
+    </div>
   );
 }
 
-export default App;
+export default Menu;

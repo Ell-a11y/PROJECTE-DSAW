@@ -24,7 +24,7 @@ function App() {
   };
 
   return (
-    <main className="app2-page">
+    <main id="main-content" className="app2-page">
       <ObjectPage
         key={id}
         resource={object}

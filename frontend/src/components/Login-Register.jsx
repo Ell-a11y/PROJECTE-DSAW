@@ -1,32 +1,59 @@
-// Importacions necesaries
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { login, register, getUser } from "./../communicationsManager";
 import { useAuth } from "../AuthContext";
 import "./../CSS/Login - Register.css";
 
-// Funcio que ens permet mostrar contrasenya
+const PASSWORD_RULES = [
+  { id: "length", label: "Mínim 8 caràcters", test: (p) => p.length >= 8 },
+  { id: "upper", label: "Almenys 1 majúscula (A-Z)", test: (p) => /[A-Z]/.test(p) },
+  { id: "digit", label: "Almenys 1 dígit (0-9)", test: (p) => /\d/.test(p) },
+  {
+    id: "special",
+    label: "Almenys 1 caràcter especial (!@#$…)",
+    test: (p) => /[!@#$%^&*()_\-+=[\]{};':"\\|,.<>/?]/.test(p),
+  },
+];
+
+function isPasswordValid(password) {
+  return PASSWORD_RULES.every((rule) => rule.test(password));
+}
+
+function isEmailValid(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 function IconEye() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
       <circle cx="12" cy="12" r="3" />
     </svg>
   );
 }
 
-// Funcio que ens permet ocultar la contrasenya
 function IconEyeOff() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
       <line x1="1" y1="1" x2="23" y2="23" />
     </svg>
   );
 }
 
-// Creacio del input de contrasenya
-function PasswordInput({ id, value, onChange, autoComplete }) {
+function FieldError({ id, message }) {
+  if (!message) return null;
+  return (
+    <p id={id} className="field-error" role="alert">
+      {message}
+    </p>
+  );
+}
+
+function PasswordInput({ id, value, onChange, onBlur, autoComplete, errorId, errorMessage, showRules }) {
   const [visible, setVisible] = useState(false);
+  const describedBy = [errorId, showRules ? "password-rules" : null].filter(Boolean).join(" ") || undefined;
+
   return (
     <div className="password-field">
       <input
@@ -34,8 +61,11 @@ function PasswordInput({ id, value, onChange, autoComplete }) {
         type={visible ? "text" : "password"}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
         autoComplete={autoComplete}
-        placeholder="Contrasenya"
+        aria-invalid={errorMessage ? "true" : undefined}
+        aria-describedby={describedBy}
+        required
       />
       <button
         type="button"
@@ -50,198 +80,385 @@ function PasswordInput({ id, value, onChange, autoComplete }) {
   );
 }
 
-export default function App() {
-    const { status, refreshSession, logout } = useAuth();
-    // Estado para saber si el modal está abierto o cerrado
-    const [open, setOpen] = useState(false); // Si se abre o se cierra
-    const [mode, setMode] = useState("registro"); // El modo por defecto sera registro
-
-    useEffect(() => { // cambia el estado en base la peticion de la autorizacion
-        if (status === "authenticated") {
-            setMode("usuario");
-        } else if (status === "unauthenticated") {
-            setMode("registro");
-        }
-    }, [status]);
-    // Se ejecuta cuando status cambie, osea cada que se haga la peticion de useAuth y esta varie el resultado
-
-    const Login = () => {
-        // Declaracion de las variables con SET
-        const [email, setEmail] = useState("");
-        const [passwd, setPasswd] = useState("");
-        const [error, setError] = useState("");
-
-        async function handleLogin() {
-            const respuesta = await login({ email, password: passwd });
-            if (!respuesta.token) {
-                setError(respuesta.error);
-            } else {
-                setError("");
-                setOpen(false);
-                await refreshSession();
-                setMode("usuario"); // Se pone en modo usuario que significa que esta registrado
-            }
-        }
-        // Retornem el Login complet
+function PasswordRules({ password, showAll }) {
+  const hasInput = password.length > 0;
+  return (
+    <ul id="password-rules" className="password-rules" aria-label="Requisits de la contrasenya">
+      {PASSWORD_RULES.map((rule) => {
+        const ok = rule.test(password);
+        const visible = showAll || hasInput;
+        if (!visible) return null;
         return (
-            <>
-                <div className="form-row">
-                <label>Coloca el teu email:</label>
-                <input type="email" placeholder="exemple@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)}/>
-                </div>
-                <div className="form-row">
-                <label htmlFor="login-password">Posar la teva password</label>
-                <PasswordInput
-                  id="login-password"
-                  value={passwd}
-                  onChange={(e) => setPasswd(e.target.value)}
-                  autoComplete="current-password"
-                /></div>
-                <button type="button" onClick={handleLogin}> Login </button>
-                {error && <p style={{ color: "red" }}>{error}</p>} {/* Si hi han errors els posan aqui*/}
-            </>
+          <li key={rule.id} className={ok ? "password-rules__item--ok" : "password-rules__item--pending"}>
+            <span aria-hidden="true">{ok ? "✓" : "○"}</span> {rule.label}
+          </li>
         );
+      })}
+    </ul>
+  );
+}
+
+function LoginForm({ onSuccess }) {
+  const [email, setEmail] = useState("");
+  const [passwd, setPasswd] = useState("");
+  const [errors, setErrors] = useState({});
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    const next = {};
+    if (!email.trim()) next.email = "Introdueix el teu correu electrònic.";
+    else if (!isEmailValid(email)) next.email = "El correu electrònic no és vàlid.";
+    if (!passwd) next.password = "Introdueix la teva contrasenya.";
+
+    if (Object.keys(next).length > 0) {
+      setErrors(next);
+      return;
+    }
+
+    const respuesta = await login({ email, password: passwd });
+    if (!respuesta.token) {
+      setErrors({ general: respuesta.error || "Credencials incorrectes." });
+    } else {
+      setErrors({});
+      await onSuccess();
+    }
+  }
+
+  return (
+    <form onSubmit={handleLogin} noValidate>
+      <div className="form-group">
+        <label htmlFor="login-email">Correu electrònic</label>
+        <input
+          id="login-email"
+          type="email"
+          placeholder="exemple@gmail.com"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setErrors((prev) => ({ ...prev, email: undefined, general: undefined }));
+          }}
+          autoComplete="email"
+          aria-invalid={errors.email ? "true" : undefined}
+          aria-describedby={errors.email ? "login-email-error" : undefined}
+          required
+        />
+        <FieldError id="login-email-error" message={errors.email} />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="login-password">Contrasenya</label>
+        <PasswordInput
+          id="login-password"
+          value={passwd}
+          onChange={(e) => {
+            setPasswd(e.target.value);
+            setErrors((prev) => ({ ...prev, password: undefined, general: undefined }));
+          }}
+          autoComplete="current-password"
+          errorId={errors.password ? "login-password-error" : undefined}
+          errorMessage={errors.password}
+        />
+        <FieldError id="login-password-error" message={errors.password} />
+      </div>
+
+      <FieldError id="login-general-error" message={errors.general} />
+
+      <div className="modal-form-actions">
+        <button type="submit" className="btn-primary">Iniciar sessió</button>
+      </div>
+    </form>
+  );
+}
+
+function RegistroForm({ onSuccess }) {
+  const [nom, setNom] = useState("");
+  const [cognom, setCognom] = useState("");
+  const [telefon, setTelefon] = useState("");
+  const [email, setEmail] = useState("");
+  const [passwd, setPasswd] = useState("");
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+
+  const setFieldError = (field, message) => {
+    setErrors((prev) => ({ ...prev, [field]: message || undefined }));
+  };
+
+  const validateNom = (value) => {
+    if (!value.trim()) return "El nom és obligatori.";
+    if (!/^[a-zA-ZÀ-ÿ]+$/.test(value)) return "Només es permeten lletres.";
+    return "";
+  };
+
+  const validateCognom = (value) => {
+    if (!value.trim()) return "El cognom és obligatori.";
+    if (!/^[a-zA-ZÀ-ÿ]+$/.test(value)) return "Només es permeten lletres.";
+    return "";
+  };
+
+  const validateEmail = (value) => {
+    if (!value.trim()) return "El correu electrònic és obligatori.";
+    if (!isEmailValid(value)) return "Format no vàlid. Exemple: nom@exemple.com";
+    return "";
+  };
+
+  const validateTelefon = (value) => {
+    if (!value.trim()) return "El telèfon és obligatori.";
+    if (!/^[6-9]\d{8}$/.test(value)) return "9 dígits, començant per 6, 7, 8 o 9.";
+    return "";
+  };
+
+  const validatePassword = (value) => {
+    if (!value) return "La contrasenya és obligatòria.";
+    if (!isPasswordValid(value)) return "La contrasenya no compleix tots els requisits.";
+    return "";
+  };
+
+  const validateAll = () => {
+    const next = {
+      nom: validateNom(nom),
+      cognom: validateCognom(cognom),
+      email: validateEmail(email),
+      telefon: validateTelefon(telefon),
+      password: validatePassword(passwd),
     };
-    const Registro = () => {
-        // Declaracio de variables amb SET's
-        const [nom, setNom] = useState("");
-        const [cognom, setCognom] = useState("");
-        const [telefon, setTelefon] = useState("");
-        const [email, setEmail] = useState("");
-        const [passwd, setPasswd] = useState("");
-        const [error, setError] = useState("");
-        // Funcio de registre, que es autologuea una vegada es crea el compte
-        async function handleRegistro() {
-            await register({email, password: passwd, nom, cognom, telefon});
-            const respuesta = await login({ email, password: passwd }); // autolog
-            if (!respuesta.token) {
-                setError("Error al iniciar sesión después del registro");
-            } else {
-                setError("");
-                setOpen(false); // cerrar modal
-                await refreshSession();
-                setMode("usuario");
-            }
-        }
-            // Verificacio de telefon
-        const verificarTelefono = (e) => {
-            const telefono = e.target.value;
-            const regex = /^[6-9]\d{8}$/;
-            const correcto = regex.test(telefono);
-            if (!correcto) {
-                setError("El teléfono debe tener 9 dígitos y empezar por 6, 7, 8 o 9");
-            } else {
-                setError("");
-            }
-            setTelefon(telefono);
-        }
-            // Verificacio de Email
-        const verificarEmail = (e) => {
-            const email = e.target.value;
-            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const correcto = regex.test(email);
-            if (!correcto) {
-                setError("El email no es válido");
-            } else {
-                setError("");
-            }
-            setEmail(email);
-        }
-            // Verificacio de nom i cognom
-        const verificarAlphabeticos = (e, funcion) => {
-            const texto = e.target.value;
-            const regex = /^[a-zA-Z]+$/;
-            const correcto = regex.test(texto);
-            if (!correcto) {
-                setError("El texto no es válido");
-            } else {
-                setError("");
-            }
-            funcion(texto);
-        }
-            // Verificacio de password segura
-        const verificarPassword = (e) => {
-            const password = e.target.value;
-            const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-            const correcto = regex.test(password);
-            if (!correcto) {
-                setError("La contraseña debe tener minimo 8 caracteres, al menos 1 mayuscula, 1 digito y 1 caracter especial.");
-            } else {
-                setError("");
-            }
-            setPasswd(password);
-        }
-            // Retorna el formulari de registre
-        return (
-            <>
-                <div className="form-row">
-                    <label>Nom:</label>
-                    <input value={nom} onChange={(e) => verificarAlphabeticos(e, setNom)} placeholder="Nom usuari"/>
-                </div>
-                <div className="form-row">
-                    <label>Cognom:</label>
-                    <input value={cognom} onChange={(e) => verificarAlphabeticos(e, setCognom)} placeholder="Cognom usuari"/>
-                </div>
-                <div className="form-row">
-                    <label>Email:</label>
-                    <input value={email} onChange={(e) => verificarEmail(e)} placeholder="Email Usuari"/>
-                </div>
-                <div className="form-row">
-                    <label>Telefon:</label>
-                    <input value={telefon} onChange={(e) => verificarTelefono(e)} placeholder="Telefon del usuari"/>
-                </div>
-                <div className="form-row">
-                    <label htmlFor="registro-password">Contrasenya:</label>
-                    <PasswordInput
-                    id="registro-password"
-                    value={passwd}
-                    onChange={(e) => verificarPassword(e)}
-                    autoComplete="new-password"
-                    placeholder="Contrasenya"
-                    />
-                </div>
-                <button type="button" onClick={handleRegistro}> Registrar </button>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-            </>
-        );
-    };
-    return (
-<>
-    {mode != "usuario" ? (
-        <button className="boton-login" onClick={() => setOpen(true)}>
-            Login / Registre
+    const cleaned = Object.fromEntries(
+      Object.entries(next).filter(([, msg]) => msg)
+    );
+    setErrors(cleaned);
+    setTouched({ nom: true, cognom: true, email: true, telefon: true, password: true });
+    return Object.keys(cleaned).length === 0;
+  };
+
+  async function handleRegistro(e) {
+    e.preventDefault();
+    if (!validateAll()) return;
+
+    await register({ email, password: passwd, nom, cognom, telefon });
+    const respuesta = await login({ email, password: passwd });
+    if (!respuesta.token) {
+      setErrors({ general: "Error en iniciar sessió després del registre." });
+    } else {
+      setErrors({});
+      await onSuccess();
+    }
+  }
+
+  return (
+    <form onSubmit={handleRegistro} noValidate>
+      <div className="form-group">
+        <label htmlFor="reg-nom">Nom</label>
+        <input
+          id="reg-nom"
+          type="text"
+          value={nom}
+          onChange={(e) => {
+            setNom(e.target.value);
+            if (touched.nom) setFieldError("nom", validateNom(e.target.value));
+            else setFieldError("nom", undefined);
+          }}
+          onBlur={() => {
+            setTouched((t) => ({ ...t, nom: true }));
+            setFieldError("nom", validateNom(nom));
+          }}
+          autoComplete="given-name"
+          aria-invalid={errors.nom ? "true" : undefined}
+          aria-describedby={errors.nom ? "reg-nom-error" : undefined}
+          required
+        />
+        <FieldError id="reg-nom-error" message={errors.nom} />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="reg-cognom">Cognom</label>
+        <input
+          id="reg-cognom"
+          type="text"
+          value={cognom}
+          onChange={(e) => {
+            setCognom(e.target.value);
+            if (touched.cognom) setFieldError("cognom", validateCognom(e.target.value));
+            else setFieldError("cognom", undefined);
+          }}
+          onBlur={() => {
+            setTouched((t) => ({ ...t, cognom: true }));
+            setFieldError("cognom", validateCognom(cognom));
+          }}
+          autoComplete="family-name"
+          aria-invalid={errors.cognom ? "true" : undefined}
+          aria-describedby={errors.cognom ? "reg-cognom-error" : undefined}
+          required
+        />
+        <FieldError id="reg-cognom-error" message={errors.cognom} />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="reg-email">Correu electrònic</label>
+        <input
+          id="reg-email"
+          type="email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (touched.email) setFieldError("email", validateEmail(e.target.value));
+            else setFieldError("email", undefined);
+          }}
+          onBlur={() => {
+            setTouched((t) => ({ ...t, email: true }));
+            setFieldError("email", validateEmail(email));
+          }}
+          autoComplete="email"
+          placeholder="nom@exemple.com"
+          aria-invalid={errors.email ? "true" : undefined}
+          aria-describedby={errors.email ? "reg-email-error" : undefined}
+          required
+        />
+        <FieldError id="reg-email-error" message={errors.email} />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="reg-telefon">Telèfon</label>
+        <input
+          id="reg-telefon"
+          type="tel"
+          value={telefon}
+          onChange={(e) => {
+            setTelefon(e.target.value);
+            if (touched.telefon) setFieldError("telefon", validateTelefon(e.target.value));
+            else setFieldError("telefon", undefined);
+          }}
+          onBlur={() => {
+            setTouched((t) => ({ ...t, telefon: true }));
+            setFieldError("telefon", validateTelefon(telefon));
+          }}
+          autoComplete="tel"
+          inputMode="numeric"
+          placeholder="612345678"
+          aria-invalid={errors.telefon ? "true" : undefined}
+          aria-describedby={errors.telefon ? "reg-telefon-error" : undefined}
+          required
+        />
+        <FieldError id="reg-telefon-error" message={errors.telefon} />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="registro-password">Contrasenya</label>
+        <p className="field-hint">Requisits: mínim 8 caràcters, majúscula, dígit i caràcter especial.</p>
+        <PasswordInput
+          id="registro-password"
+          value={passwd}
+          showRules
+          onChange={(e) => {
+            const val = e.target.value;
+            setPasswd(val);
+            if (touched.password) setFieldError("password", validatePassword(val));
+            else setFieldError("password", undefined);
+          }}
+          onBlur={(e) => {
+            setTouched((t) => ({ ...t, password: true }));
+            setFieldError("password", validatePassword(e.target.value));
+          }}
+          autoComplete="new-password"
+          errorId={errors.password ? "reg-password-error" : undefined}
+          errorMessage={errors.password}
+        />
+        <PasswordRules password={passwd} showAll />
+        <FieldError id="reg-password-error" message={errors.password} />
+      </div>
+
+      <FieldError id="reg-general-error" message={errors.general} />
+
+      <div className="modal-form-actions">
+        <button type="submit" className="btn-primary">Registrar-se</button>
+      </div>
+    </form>
+  );
+}
+
+export default function LoginRegister() {
+  const { status, refreshSession, logout } = useAuth();
+  const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState("registro");
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      setMode("usuario");
+    } else if (status === "unauthenticated") {
+      setMode("registro");
+    }
+  }, [status]);
+
+  const handleSuccess = async () => {
+    setOpen(false);
+    await refreshSession();
+    setMode("usuario");
+  };
+
+  return (
+    <>
+      {mode !== "usuario" ? (
+        <button type="button" className="auth-trigger" onClick={() => setOpen(true)}>
+          Iniciar sessió
         </button>
-    ) : (
-        <button
-            className="boton-login"
-            type="button"
-            onClick={async () => {
-                const data = await getUser();
-                if(data.detail == "Token expirado") {
-                    logout();
-                    setMode("login");
-                    alert("La teva sesio a expirat.")
-                    return null;
-                }
-                window.location.href = "/usuari";
-            }}>
-            Usuari
-        </button>
-    )}
-    {open && ( // Open decide si abre o no el modal, vamos si es Usuario no
-        <div className="modal-backdrop" onClick={() => setOpen(false)}>
-            <div className="modal" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                    <h2> Inicia sesio amb el teu compte o crea el compte </h2>
-                    <button onClick={() => setOpen(false)}> ✕ </button>
-                </div>
-                <button onClick={() => setMode("login")}> Login </button>
-                <button onClick={() => setMode("registro")}> Registre </button>
-                {mode === "login" && <Login />} {/* Decision de si mandar login o registro */}
-                {mode === "registro" && <Registro />} {/* Decision de si mandar login o registro */}
+      ) : (
+        <Link
+          to="/usuari"
+          className="auth-trigger"
+          onClick={async (e) => {
+            const data = await getUser();
+            if (data.detail === "Token expirado") {
+              e.preventDefault();
+              logout();
+              setMode("login");
+              alert("La teva sessió ha expirat.");
+            }
+          }}
+        >
+          El meu perfil
+        </Link>
+      )}
+
+      {open && (
+        <div className="modal-backdrop" role="presentation" onClick={() => setOpen(false)}>
+          <div
+            className="modal auth-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="auth-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <h2 id="auth-modal-title">Inicia sessió o crea el teu compte</h2>
+              <button type="button" className="modal-close" onClick={() => setOpen(false)} aria-label="Tancar el diàleg">✕</button>
             </div>
+
+            <div className="modal-tabs" role="tablist" aria-label="Tipus de formulari">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === "login"}
+                className={`modal-tab ${mode === "login" ? "is-active" : ""}`}
+                onClick={() => setMode("login")}
+              >
+                Iniciar sessió
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === "registro"}
+                className={`modal-tab ${mode === "registro" ? "is-active" : ""}`}
+                onClick={() => setMode("registro")}
+              >
+                Registre
+              </button>
+            </div>
+
+            <div className="modal-body">
+              {mode === "login" && <LoginForm onSuccess={handleSuccess} />}
+              {mode === "registro" && <RegistroForm onSuccess={handleSuccess} />}
+            </div>
+          </div>
         </div>
-    )}
-</>
-);
+      )}
+    </>
+  );
 }
